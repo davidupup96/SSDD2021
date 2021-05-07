@@ -33,12 +33,13 @@ class Publisher(Ice.Application):
 
         publisher = topic.getPublisher()
         printer = IceFlix.MainPrx.uncheckedCast(publisher)
-
-        print("publishing 10 'Hello World' events")
-        for i in range(10):
-            printer.getAuthenticator("Hello World %s!" % i)
-
+        printer.getAuthenticator("Hello World ")
+        #algo similar a esto-> aut = topic.getPublisher()
+        #aut = IceFlix.AuthenticatorPrx.uncheckedCast(publisher)
+        #aut.refreshAuthorization("Hola mundo")
+        
         return 0
+        
 
 
 sys.exit(Publisher().main(sys.argv))

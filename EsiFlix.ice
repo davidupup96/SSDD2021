@@ -72,8 +72,10 @@ module IceFlix {
     ///////////// Auth server /////////////
 
     interface Authenticator {
-        string refreshAuthorization(string user, string passwordHash) throws Unauthorized;
-        bool isAuthorized(string authentication);
+        /////////////string refreshAuthorization(string user, string passwordHash) throws Unauthorized/////////////
+        void refreshAuthorization(string user);
+        /////////////bool isAuthorized(string authentication);/////////////
+        void isAuthorized(string authentication);
     }
 
     interface TokenRevocation {
