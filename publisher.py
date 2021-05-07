@@ -25,19 +25,32 @@ class Publisher(Ice.Application):
             return 2
 
         topic_name = "ServiceAvariability"
+        #topic_name2 = "ServiceAvariability2"
         try:
             topic = topic_mgr.retrieve(topic_name)
+            #topic2 = topic_mgr.retrieve(topic_name2)
         except IceStorm.NoSuchTopic:
             print("no such topic found, creating")
             topic = topic_mgr.create(topic_name)
+            #topic2 = topic_mgr.create(topic_name2)
 
         publisher = topic.getPublisher()
+     
+        #printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
         printer = IceFlix.MainPrx.uncheckedCast(publisher)
-        printer.getAuthenticator("Hello World ")
-        #algo similar a esto-> aut = topic.getPublisher()
-        #aut = IceFlix.AuthenticatorPrx.uncheckedCast(publisher)
-        #aut.refreshAuthorization("Hola mundo")
+        #aut=printer.getAuthenticator()
+        printer.getCatalogService()
         
+        #algo similar a esto-> aut = topic.getPublisher()
+        #aut = IceFlix.MainPrx.uncheckedCast(publisher)
+        #aut.catalogService("Hola mundo")
+        
+
+        #printer.catalogService("Hola catalogo")
+       # printer.authenticationService("Hola autenticator ")
+       # printer.mediaService("Hola media")
+
+
         return 0
         
 

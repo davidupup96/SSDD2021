@@ -7,11 +7,41 @@ import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 
+import time
 
 class Main(IceFlix.Main):
-    def getAuthenticator(self, message, current=None):
+    def getAuthenticator(self, current=None):
+        try:
+            # f = open("listaAut", "r")
+            # l=f.readline()
+            # print(f.read())
+            # f.close()
+            l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
+            r=l.rstrip(l[-1])
+        except TemporaryUnavailable:
+            raise
+        return r
+
+        
+    def getCatalogService(self, current=None):
         print("Event received: {0}".format(message))
         sys.stdout.flush()
+        catalog=5
+        return catalog
+
+class ServiceAvailability (IceFlix.ServiceAvailability ):
+    def catalogService(self, message, current=None):
+        print("Event received: {0}".format(message))
+        sys.stdout.flush()
+
+    def authenticationService(self, message, current=None):
+        print("Event received: {0}".format(message))
+        sys.stdout.flush()
+
+    def mediaService(self, message, current=None):
+        print("Event received: {0}".format(message))
+        sys.stdout.flush()
+      
 
 
 class Subscriber(Ice.Application):
@@ -32,12 +62,13 @@ class Subscriber(Ice.Application):
             return 2
 
         ic = self.communicator()
-        servant = Main()
+        servant = ServiceAvailability ()
         adapter = ic.createObjectAdapter("MainAdapter")
         MServer = adapter.addWithUUID(servant)
 
         topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
         qos = {}
+        listaAut={"792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000"}
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
@@ -45,6 +76,11 @@ class Subscriber(Ice.Application):
 
         topic.subscribeAndGetPublisher(qos, MServer)
         print("Waiting events... '{}'".format(MServer))
+        f = open("listaAut", "r")
+        l=f.read()
+        print(l)
+
+       
 
         adapter.activate()
         self.shutdownOnInterrupt()

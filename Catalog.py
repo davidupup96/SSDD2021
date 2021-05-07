@@ -8,15 +8,13 @@ Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 
 
-class Authenticator(IceFlix.Authenticator):
-    def refreshAuthorization(self, message, current=None):
-        print("Buenos dias: {0}".format(message))
+class MediaCatalog (IceFlix.MediaCatalog):
+    def getTile(self, id, current=None):
+        print("MEdia catalog {0}".format(id))
         sys.stdout.flush()
         
-    def isAuthorized(self, message, current=None):
-        print("Buenas noches: {0}".format(message))
-        sys.stdout.flush()
-
+   
+#throws WrongMediaId, TemporaryUnavailable;
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):
@@ -36,20 +34,19 @@ class Autenticador(Ice.Application):
             return 2
 
         ic = self.communicator()
-        servant = Authenticator()
-        adapter = ic.createObjectAdapter("AuthenticatorAdapter")
+        servant = MediaCatalog ()
+        adapter = ic.createObjectAdapter("MediaCatalogAdapter")
         MServer = adapter.addWithUUID(servant)
 
         topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
         qos = {}
-        
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
         topic.subscribeAndGetPublisher(qos, MServer)
-        print("Autenticando credenciales...'{}'".format(MServer))
+        print("Clase server media..'{}'".format(MServer))
 
         adapter.activate()
         self.shutdownOnInterrupt()

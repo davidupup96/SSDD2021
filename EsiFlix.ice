@@ -60,7 +60,9 @@ module IceFlix {
     ///////////// Catalog server /////////////
    
     interface MediaCatalog {
-        Media getTile(string id) throws WrongMediaId, TemporaryUnavailable;
+       /////////////  Media getTile(string id) throws WrongMediaId, TemporaryUnavailable;
+       void getTile(string id) throws WrongMediaId, TemporaryUnavailable;
+
         StringList getTilesByName(string name, bool exact);
         StringList getTilesByTags(StringList tags, bool includeAllTags);
  
@@ -85,14 +87,18 @@ module IceFlix {
     ///////////// Main server /////////////
 
     interface Main {
-        /////////////Authenticator* getAuthenticator() throws TemporaryUnavailable;/////////////
-        void getAuthenticator(string authentication);
-        MediaCatalog* getCatalogService() throws TemporaryUnavailable;
+        string getAuthenticator() throws TemporaryUnavailable;
+    
+        int getCatalogService() throws TemporaryUnavailable;
     }
 
     interface ServiceAvailability {
-        void catalogService(MediaCatalog* service, string id);
-        void authenticationService(Authenticator* service, string id);
-        void mediaService(StreamProvider* service, string id);
+       ///////////// void catalogService(MediaCatalog* service, string id);
+     /////////////   void authenticationService(Authenticator* service, string id);
+      /////////////  void mediaService(StreamProvider* service, string id);
+
+        void catalogService(string id);
+        void authenticationService(string id);
+        void mediaService(string id);
     }
 }

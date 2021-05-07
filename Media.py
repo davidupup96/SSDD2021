@@ -8,7 +8,7 @@ Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 
 
-class Authenticator(IceFlix.Authenticator):
+class Media(IceFlix.Media):
     def refreshAuthorization(self, message, current=None):
         print("Buenos dias: {0}".format(message))
         sys.stdout.flush()
@@ -42,7 +42,6 @@ class Autenticador(Ice.Application):
 
         topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
         qos = {}
-        
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
