@@ -61,10 +61,47 @@ class Autenticador(Ice.Application):
         print("Autenticando credenciales...'{}'".format(MServer))
 
         adapter.activate()
+        #me he llevado 2 lineas de cerrar servicio
+
+        #topic.unsubscribe(MServer)
+
+        #parte publicadora
+        #topic_mgr = self.get_topic_manager()
+        #if not topic_mgr:
+            #print('Invalid proxy')
+            #return 2
+
+        # = "ServiceAvariability"
+        #topic_name2 = "ServiceAvariability2"
+        #try:
+            #topic = topic_mgr.retrieve(topic_name)
+            #topic2 = topic_mgr.retrieve(topic_name2)
+        #except IceStorm.NoSuchTopic:
+            #print("no such topic found, creating")
+            #topic = topic_mgr.create(topic_name)
+            #topic2 = topic_mgr.create(topic_name2)
+
+        #probar toString
+        MServerToString=str(MServer)
+        x = MServerToString.split(":")
+        stringBueno = x[0]+":"+x[1]
+
+        #stringToProxy
+        proxyBueno = ic.stringToProxy(stringBueno)
+
+        #nuevo checkedCast
+        autprx = IceFlix.AuthenticatorPrx.checkedCast(MServer)
+
+        publisher = topic.getPublisher()
+        printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
+
+        printer.authenticationService(autprx,"idPrueba")
+
+        topic.unsubscribe(MServer)
+
+        #las 2 lineas de cerrar servicio
         self.shutdownOnInterrupt()
         ic.waitForShutdown()
-
-        topic.unsubscribe(subscriber)
 
         return 0
 
