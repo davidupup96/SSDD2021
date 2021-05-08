@@ -29,6 +29,20 @@ class Main(IceFlix.Main):
         catalog=5
         return catalog
 
+class Prueba(IceFlix.Prueba):
+ 
+    def getPrueba(self, current=None):
+        print("MAIN")
+        print("Event received: ".format())
+        sys.stdout.flush()
+
+        f = open("listaAut", "r")
+        l=f.readline()
+        print(l)
+        f.close()
+
+        return str(l)
+
 class ServiceAvailability (IceFlix.ServiceAvailability ):
     def catalogService(self, message, current=None):
         print("Event received: {0}".format(message))
@@ -63,8 +77,11 @@ class Subscriber(Ice.Application):
 
         ic = self.communicator()
         servant = ServiceAvailability ()
+        servantPrueba = Prueba()
         adapter = ic.createObjectAdapter("MainAdapter")
         MServer = adapter.addWithUUID(servant)
+        MServerPrueba = adapter.addWithUUID(servantPrueba)
+
 
         topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
         qos = {}
@@ -75,10 +92,11 @@ class Subscriber(Ice.Application):
             topic = topic_mgr.create(topic_name)
 
         topic.subscribeAndGetPublisher(qos, MServer)
+        topic.subscribeAndGetPublisher(qos, MServerPrueba)
         print("Waiting events... '{}'".format(MServer))
-        f = open("listaAut", "r")
-        l=f.read()
-        print(l)
+        #f = open("listaAut", "r")
+        #l=f.read()
+        #print(l)
 
        
 
@@ -86,7 +104,8 @@ class Subscriber(Ice.Application):
         self.shutdownOnInterrupt()
         ic.waitForShutdown()
 
-        topic.unsubscribe(subscriber)
+        topic.unsubscribe(MServer)
+        topic.unsubscribe(MServerPrueba)
 
         return 0
 

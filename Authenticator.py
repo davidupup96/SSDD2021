@@ -17,6 +17,15 @@ class Authenticator(IceFlix.Authenticator):
         print("Buenas noches: {0}".format(message))
         sys.stdout.flush()
 
+class Prueba(IceFlix.Prueba):
+    
+
+    def getPrueba(self, msg, current=None):
+        print("AUTH")
+        print("Event received: {0}".format(msg))
+        sys.stdout.flush()
+
+
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):

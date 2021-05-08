@@ -20,24 +20,24 @@ module IceFlix {
         string getSyncTopic();
         void refreshAuthentication(string authentication) throws Unauthorized;
         void stop();
-    }
+    };
 
     // StreamController requests channel
     interface StreamerSync {
         void requestAuthentication();
-    }
+    };
 
     // Handle media storage
     interface StreamProvider {
         StreamController* getStream(string id, string authentication) throws Unauthorized, WrongMediaId;
         bool isAvailable(string id);
         void reannounceMedia();
-    }
+    };
 
     // StreamProvider announcements channel
     interface StreamAnnounces {
         void newMedia(string id, string initialName, string providerId);
-    }
+    };
 
     ///////////// Custom Types /////////////
 
@@ -48,14 +48,14 @@ module IceFlix {
     struct MediaInfo {
         string name;
         StringList tags;
-     }
+     };
 
     // Media location
     struct Media {
         string id;
         StreamProvider *provider;
         MediaInfo info;
-    }
+    };
    
     ///////////// Catalog server /////////////
    
@@ -69,7 +69,7 @@ module IceFlix {
         void renameTile(string id, string name, string authentication) throws Unauthorized, WrongMediaId;
         void addTags(string id, StringList tags, string authentication) throws Unauthorized, WrongMediaId;
         void removeTags(string id, StringList tags, string authentication) throws Unauthorized, WrongMediaId;
-    }
+    };
 
     ///////////// Auth server /////////////
 
@@ -78,19 +78,19 @@ module IceFlix {
         void refreshAuthorization(string user);
         /////////////bool isAuthorized(string authentication);/////////////
         void isAuthorized(string authentication);
-    }
+    };
 
     interface TokenRevocation {
         void revoke(string authentication);
-    }
+    };
 
     ///////////// Main server /////////////
 
     interface Main {
-        string getAuthenticator() throws TemporaryUnavailable;
+        Authenticator* getAuthenticator() throws TemporaryUnavailable;
     
         int getCatalogService() throws TemporaryUnavailable;
-    }
+    };
 
     interface ServiceAvailability {
        ///////////// void catalogService(MediaCatalog* service, string id);
@@ -100,5 +100,9 @@ module IceFlix {
         void catalogService(string id);
         void authenticationService(string id);
         void mediaService(string id);
-    }
-}
+    };
+
+    interface Prueba{
+        string getPrueba();
+    };
+};

@@ -35,11 +35,17 @@ class Publisher(Ice.Application):
             #topic2 = topic_mgr.create(topic_name2)
 
         publisher = topic.getPublisher()
+
+        prueba = IceFlix.PruebaPrx.uncheckedCast(publisher)
+        #try:
+        v = prueba.getPrueba()
+        #except Ice.UnmarshalOutOfBoundsException:
+            #print ("tratando error de unmarshal")
      
         #printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        printer = IceFlix.MainPrx.uncheckedCast(publisher)
+        #printer = IceFlix.MainPrx.uncheckedCast(publisher)
         #aut=printer.getAuthenticator()
-        printer.getCatalogService()
+        #printer.getCatalogService()
         
         #algo similar a esto-> aut = topic.getPublisher()
         #aut = IceFlix.MainPrx.uncheckedCast(publisher)
