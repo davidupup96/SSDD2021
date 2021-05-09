@@ -60,11 +60,11 @@ module IceFlix {
     ///////////// Catalog server /////////////
    
     interface MediaCatalog {
-       /////////////  Media getTile(string id) throws WrongMediaId, TemporaryUnavailable;
-       void getTile(string id) throws WrongMediaId, TemporaryUnavailable;
+        void getTile(string id) throws WrongMediaId, TemporaryUnavailable;
+       
 
-        StringList getTilesByName(string name, bool exact);
-        StringList getTilesByTags(StringList tags, bool includeAllTags);
+        void getTilesByName(string name, bool exact);
+        void getTilesByTags(StringList tags, bool includeAllTags);
  
         void renameTile(string id, string name, string authentication) throws Unauthorized, WrongMediaId;
         void addTags(string id, StringList tags, string authentication) throws Unauthorized, WrongMediaId;
