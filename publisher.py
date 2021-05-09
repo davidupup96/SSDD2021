@@ -36,17 +36,38 @@ class Publisher(Ice.Application):
 
         publisher = topic.getPublisher()
 
-        prueba = IceFlix.PruebaPrx.uncheckedCast(publisher)
+        #prueba = IceFlix.PruebaPrx.uncheckedCast(publisher)
         #try:
-        v = prueba.getPrueba()
+        #v = prueba.getPrueba()
         #except Ice.UnmarshalOutOfBoundsException:
             #print ("tratando error de unmarshal")
      
         #printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        #printer = IceFlix.MainPrx.uncheckedCast(publisher)
-        #aut=printer.getAuthenticator()
-        #printer.getCatalogService()
+        #printer.authenticationService()
         
+        #printer = IceFlix.MainPrx.uncheckedCast(publisher)
+        #aut = IceFlix.MainPrx.uncheckedCast(publisher)
+        #obtenAut = aut.getAuthenticator("toma")
+        #print(obtenAut)
+        
+        #printer.getCatalogService()
+
+        med = IceFlix.MediaCatalogPrx.uncheckedCast(publisher)
+        dameCatalogo = med.getTile("id20")
+        print (dameCatalogo)
+
+        #damePorNombre = med.getTilesByName("name2", False)
+        #print (damePorNombre)    
+
+        #damePorTags = med.getTilesByTags(["tag0" , "tag4"], True)    
+        #print (damePorTags)
+
+        #renombra = med.renameTile("Id20", "nuevoNombre2", "aut")
+
+        #anadeTags = med.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+
+        borraTags = med.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+
         #algo similar a esto-> aut = topic.getPublisher()
         #aut = IceFlix.MainPrx.uncheckedCast(publisher)
         #aut.catalogService("Hola mundo")
