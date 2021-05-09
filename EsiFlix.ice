@@ -93,13 +93,13 @@ module IceFlix {
     };
 
     interface ServiceAvailability {
-       ///////////// void catalogService(MediaCatalog* service, string id);
+        void catalogService(MediaCatalog* service, string id);
         void authenticationService(Authenticator* service, string id);
-      /////////////  void mediaService(StreamProvider* service, string id);
+        void mediaService(StreamProvider* service, string id);
 
-        void catalogService(string id);
+        
         /////////////// void authenticationService(string id);
-        void mediaService(string id);
+       
     };
 
     interface Prueba{

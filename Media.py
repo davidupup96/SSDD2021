@@ -8,17 +8,36 @@ Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 
 
-class Media(IceFlix.Media):
-    def refreshAuthorization(self, message, current=None):
-        print("Buenos dias: {0}".format(message))
+class StreamProvider(IceFlix.StreamProvider):
+
+    def getStream(self, id, authentication, current=None):
+        print("Get Stream: {0}".format(message))
         sys.stdout.flush()
         
-    def isAuthorized(self, message, current=None):
-        print("Buenas noches: {0}".format(message))
+    def isAvailable(self, id, current=None):
+        print("IsAvailabrle: {0}".format(message))
         sys.stdout.flush()
 
+    def reannounceMedia(self, current=None):
+        print("reanounce")
 
-class Autenticador(Ice.Application):
+
+class StreamController(IceFlix.StreamController):
+    def getSDP(self, authentication, port, current=None):
+        print("getSPD")
+
+    def getSyncTopic(self,current=None):
+        print("getSyncTopic")
+
+    def refreshAuthentication(self,authentication, current=None):
+        print("reflesh autentication")
+
+    def stop(self, current=None):
+        print("stop")
+
+
+
+class MediaStream(Ice.Application):
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
         proxy = self.communicator().propertyToProxy(key)
@@ -36,11 +55,11 @@ class Autenticador(Ice.Application):
             return 2
 
         ic = self.communicator()
-        servant = Authenticator()
-        adapter = ic.createObjectAdapter("AuthenticatorAdapter")
+        servant = StreamProvider()
+        adapter = ic.createObjectAdapter("StreamProviderAdapter")
         MServer = adapter.addWithUUID(servant)
 
-        topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
+        topic_name = "ServiceAvariability" 
         qos = {}
         try:
             topic = topic_mgr.retrieve(topic_name)
@@ -51,6 +70,21 @@ class Autenticador(Ice.Application):
         print("Autenticando credenciales...'{}'".format(MServer))
 
         adapter.activate()
+
+        #nuevo checkedCast
+        streamprx = IceFlix.StreamProviderPrx.checkedCast(MServer)
+
+        publisher = topic.getPublisher()
+        print("Soy STREAM PROVIDER :  \n")
+        print(streamprx)
+        printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
+
+        printer.mediaService(streamprx,"idPrueba")
+
+        topic.unsubscribe(MServer)
+
+
+
         self.shutdownOnInterrupt()
         ic.waitForShutdown()
 
@@ -59,4 +93,4 @@ class Autenticador(Ice.Application):
         return 0
 
 
-sys.exit(Autenticador().main(sys.argv))
+sys.exit(MediaStream().main(sys.argv))

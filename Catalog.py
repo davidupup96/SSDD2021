@@ -12,20 +12,29 @@ import json
 class MediaCatalog (IceFlix.MediaCatalog):
     def getTile(self, id, current=None):
         with open('catalogo.json') as f:
+            # ToDo Controlar cuando el archivo esta vacio.
+            # Y TemporaryUnavailable
             data = json.load(f)
             #print(data)
             
         #recorrer el json
-        
-        for media in data["peliculas"]:
-            if(media["id"] == id):
-                encontrado = media
-            #print (value)
+        found=False
+        try:
+            for media in data["peliculas"]:
+                if(media["id"] == id):
+                    encontrado = media
+                    found=True
+                #print (value)
+                
+                #for hijo in value:
+                #   print (hijo)
+                #  print (hijo["name"])
+                # print (hijo["tags"])
+            if not found:
+                raise IceFlix.WrongMediaId
+        except IceFlix.WrongMediaId: 
+            print("El identificador: "+id+ " no existe")
             
-            #for hijo in value:
-             #   print (hijo)
-              #  print (hijo["name"])
-               # print (hijo["tags"])
 
     def getTilesByName(self, name, exact, current=None):
         with open('catalogo.json') as f:
@@ -83,17 +92,25 @@ class MediaCatalog (IceFlix.MediaCatalog):
         data = json.load(jsonFile) # Read the JSON into the buffer
         jsonFile.close() # Close the JSON file
 
-        for media in data["peliculas"]:
-            if(media["id"] == id):
-                encontrado = media
+        found=False
+        try:
+            for media in data["peliculas"]:
+                if(media["id"] == id):
+                    encontrado = media
+                    found=True
 
-                ## Working with buffered content
-                encontrado["info"]["name"] = name
-                
-                ## Save our changes to JSON file
-                jsonFile = open("catalogo.json", "w+")
-                jsonFile.write(json.dumps(data, indent = 4))
-                jsonFile.close()
+                    ## Working with buffered content
+                    encontrado["info"]["name"] = name
+                    
+                    ## Save our changes to JSON file
+                    jsonFile = open("catalogo.json", "w+")
+                    jsonFile.write(json.dumps(data, indent = 4))
+                    jsonFile.close()
+
+            if not found:
+                raise IceFlix.WrongMediaId
+        except IceFlix.WrongMediaId: 
+            print("El identificador: "+id+ " no existe")
 
     def addTags(self, id, tags, authentication, current=None):
 
@@ -103,17 +120,27 @@ class MediaCatalog (IceFlix.MediaCatalog):
         data = json.load(jsonFile) # Read the JSON into the buffer
         jsonFile.close() # Close the JSON file
 
-        for media in data["peliculas"]:
-            if(media["id"] == id):
-                encontrado = media
+        found=False
+        try:
+            for media in data["peliculas"]:
+                if(media["id"] == id):
+                    encontrado = media
+                    found=True
 
-                ## Working with buffered content
-                encontrado["info"]["tags"].extend(tags)
-                
-                ## Save our changes to JSON file
-                jsonFile = open("catalogo.json", "w+")
-                jsonFile.write(json.dumps(data, indent = 4))
-                jsonFile.close()
+                    ## Working with buffered content
+                    encontrado["info"]["tags"].extend(tags)
+                    
+                    ## Save our changes to JSON file
+                    jsonFile = open("catalogo.json", "w+")
+                    jsonFile.write(json.dumps(data, indent = 4))
+                    jsonFile.close()
+
+            if not found:
+                    raise IceFlix.WrongMediaId
+        except IceFlix.WrongMediaId: 
+            print("El identificador: "+id+ " no existe")
+
+
 
     def removeTags(self, id, tags, authentication, current=None):
 
@@ -122,25 +149,33 @@ class MediaCatalog (IceFlix.MediaCatalog):
         data = json.load(jsonFile) # Read the JSON into the buffer
         jsonFile.close() # Close the JSON file
 
-        for media in data["peliculas"]:
-            if(media["id"] == id):
-                encontrado = media
+        found=False
+        try:
+            for media in data["peliculas"]:
+                if(media["id"] == id):
+                    encontrado = media
+                    found=True
 
-                ## Working with buffered content
-                i = 0
-                for tagEncontrado in encontrado["info"]["tags"]:
-                    
-                    for tagParams in tags:  
+                    ## Working with buffered content
+                    i = len(encontrado["info"]["tags"])-1
+                    for tagEncontrado in reversed(encontrado["info"]["tags"]):
+                        
+                        for tagParams in tags:  
 
-                        if(tagParams == tagEncontrado):
-                            del(encontrado["info"]["tags"][i])
-                            
-                    i+=1
+                            if(tagParams == tagEncontrado):
+                                print("Encuentro tag a borrar: "+ tagParams)
+                                del(encontrado["info"]["tags"][i])
+                            # borrar.append(i)
+                        i-=1
+            if not found:
+                    raise IceFlix.WrongMediaId
+        except IceFlix.WrongMediaId: 
+            print("El identificador: "+id+ " no existe")
                 
                 ## Save our changes to JSON file
-                jsonFile = open("catalogo.json", "w+")
-                jsonFile.write(json.dumps(data, indent = 4))
-                jsonFile.close()
+        jsonFile = open("catalogo.json", "w+")
+        jsonFile.write(json.dumps(data, indent = 4))
+        jsonFile.close()
 
 
 
@@ -181,6 +216,17 @@ class Autenticador(Ice.Application):
         print("Clase server media..'{}'".format(MServer))
 
         adapter.activate()
+
+        #nuevo checkedCast
+        catalogprx = IceFlix.MediaCatalogPrx.checkedCast(MServer)
+
+        publisher = topic.getPublisher()
+        print("Soy Catalog PROVIDER :  \n")
+        print(catalogprx)
+        printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
+
+        printer.catalogService(catalogprx,"idPrueba")
+
         self.shutdownOnInterrupt()
         ic.waitForShutdown()
 

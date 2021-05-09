@@ -80,15 +80,7 @@ class Autenticador(Ice.Application):
             #print("no such topic found, creating")
             #topic = topic_mgr.create(topic_name)
             #topic2 = topic_mgr.create(topic_name2)
-
-        #probar toString
-        MServerToString=str(MServer)
-        x = MServerToString.split(":")
-        stringBueno = x[0]+":"+x[1]
-
-        #stringToProxy
-        proxyBueno = ic.stringToProxy(stringBueno)
-
+              
         #nuevo checkedCast
         autprx = IceFlix.AuthenticatorPrx.checkedCast(MServer)
 

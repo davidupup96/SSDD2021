@@ -16,7 +16,7 @@ class Main(IceFlix.Main):
             # l=f.readline()
             # print(f.read())
             # f.close()
-            l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
+            #l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
             r=l.rstrip(l[-1])
         except TemporaryUnavailable:
             raise
@@ -44,15 +44,15 @@ class Prueba(IceFlix.Prueba):
         return str(l)
 
 class ServiceAvailability (IceFlix.ServiceAvailability ):
-    def catalogService(self, message, current=None):
+    def catalogService(self, message, id,current=None):
         print("Event received: {0}".format(message))
         sys.stdout.flush()
 
-    def authenticationService(self, message, current=None):
+    def authenticationService(self, message,id, current=None):
         print("Event received: {0}".format(message))
         sys.stdout.flush()
 
-    def mediaService(self, message, current=None):
+    def mediaService(self, message, id,current=None):
         print("Event received: {0}".format(message))
         sys.stdout.flush()
       

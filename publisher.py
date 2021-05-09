@@ -53,8 +53,8 @@ class Publisher(Ice.Application):
         #printer.getCatalogService()
 
         med = IceFlix.MediaCatalogPrx.uncheckedCast(publisher)
-        dameCatalogo = med.getTile("id20")
-        print (dameCatalogo)
+        #dameCatalogo = med.getTile("idd")
+       # print (dameCatalogo)
 
         #damePorNombre = med.getTilesByName("name2", False)
         #print (damePorNombre)    
@@ -62,11 +62,11 @@ class Publisher(Ice.Application):
         #damePorTags = med.getTilesByTags(["tag0" , "tag4"], True)    
         #print (damePorTags)
 
-        #renombra = med.renameTile("Id20", "nuevoNombre2", "aut")
+        #renombra = med.renameTile("iii20", "nuevoNombre2", "aut")
 
-        #anadeTags = med.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+        #anadeTags = med.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
 
-        borraTags = med.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+        borraTags = med.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
 
         #algo similar a esto-> aut = topic.getPublisher()
         #aut = IceFlix.MainPrx.uncheckedCast(publisher)

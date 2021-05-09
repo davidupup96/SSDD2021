@@ -16,3 +16,11 @@ $ python3 subscriber.py --Ice.Config=subscriber.config
 Y por último un publicador:
 
 $ python3 publisher.py --Ice.Config=publisher.config
+
+ python3 Server.py --Ice.Config=Server.config
+
+
+ python3 Catalog.py --Ice.Config=Catalog.config
+
+
+python3 Media.py --Ice.Config=Media.config
