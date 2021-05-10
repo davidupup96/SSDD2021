@@ -87,9 +87,9 @@ module IceFlix {
     ///////////// Main server /////////////
 
     interface Main {
-        Authenticator* getAuthenticator() throws TemporaryUnavailable;
+        string getAuthenticator() throws TemporaryUnavailable;
     
-        int getCatalogService() throws TemporaryUnavailable;
+        void getCatalogService() throws TemporaryUnavailable;
     };
 
     interface ServiceAvailability {
@@ -104,5 +104,6 @@ module IceFlix {
 
     interface Prueba{
         string getPrueba();
+        void pruebaVacio();
     };
 };

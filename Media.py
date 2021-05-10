@@ -15,7 +15,7 @@ class StreamProvider(IceFlix.StreamProvider):
         sys.stdout.flush()
         
     def isAvailable(self, id, current=None):
-        print("IsAvailabrle: {0}".format(message))
+        print("IsAvailable: {0}".format(message))
         sys.stdout.flush()
 
     def reannounceMedia(self, current=None):
@@ -54,41 +54,38 @@ class MediaStream(Ice.Application):
             print("Invalid proxy")
             return 2
 
-        ic = self.communicator()
+        broker = self.communicator()
         servant = StreamProvider()
-        adapter = ic.createObjectAdapter("StreamProviderAdapter")
-        MServer = adapter.addWithUUID(servant)
+        adapter = broker.createObjectAdapter("StreamProviderAdapter")
+        mediaServer = adapter.addWithUUID(servant)
 
-        topic_name = "ServiceAvariability" 
+        topic_name = "ServiceAvailability" 
         qos = {}
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
-        topic.subscribeAndGetPublisher(qos, MServer)
-        print("Autenticando credenciales...'{}'".format(MServer))
+        topic.subscribeAndGetPublisher(qos, mediaServer)
+        print("Autenticando credenciales...'{}'".format(mediaServer))
 
         adapter.activate()
 
         #nuevo checkedCast
-        streamprx = IceFlix.StreamProviderPrx.checkedCast(MServer)
+        streamprx = IceFlix.StreamProviderPrx.checkedCast(mediaServer)
 
         publisher = topic.getPublisher()
         print("Soy STREAM PROVIDER :  \n")
         print(streamprx)
-        printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
+        media = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
 
-        printer.mediaService(streamprx,"idPrueba")
-
-        topic.unsubscribe(MServer)
-
-
+        media.mediaService(streamprx,"idPrueba")
+       
 
         self.shutdownOnInterrupt()
-        ic.waitForShutdown()
+        broker.waitForShutdown()
 
-        topic.unsubscribe(subscriber)
+        topic.unsubscribe(mediaServer)
 
         return 0
 

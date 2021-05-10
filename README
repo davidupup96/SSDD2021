@@ -8,19 +8,16 @@ de icebox requiere un directorio para la base de datos.
 $ mkdir db
 $ icebox --Ice.Config=icebox.config &
 
-Después ejecutamos al menos un subscriptor si queremos ver los eventos que llegan al
-canal:
-
-$ python3 subscriber.py --Ice.Config=subscriber.config
-
-Y por último un publicador:
-
-$ python3 publisher.py --Ice.Config=publisher.config
+Después ejecutamos el Main server y a continuacion el resto de servicios :
 
  python3 Server.py --Ice.Config=Server.config
 
-
  python3 Catalog.py --Ice.Config=Catalog.config
 
+ python3 Media.py --Ice.Config=Media.config
 
-python3 Media.py --Ice.Config=Media.config
+ python3 Authenticator.py --Ice.Config=Authenticator.config
+
+Por ultimo se ejecuta el publisher para las pruebas pertinentes.
+
+ python3 publisher.py --Ice.Config=publisher.config

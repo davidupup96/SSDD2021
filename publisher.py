@@ -24,7 +24,7 @@ class Publisher(Ice.Application):
             print('Invalid proxy')
             return 2
 
-        topic_name = "ServiceAvariability"
+        topic_name = "ServiceAvailability"
         #topic_name2 = "ServiceAvariability2"
         try:
             topic = topic_mgr.retrieve(topic_name)
@@ -36,50 +36,118 @@ class Publisher(Ice.Application):
 
         publisher = topic.getPublisher()
 
-        #prueba = IceFlix.PruebaPrx.uncheckedCast(publisher)
+
+        ############################################################
+        ## AQUI PROBANDO LA INVOCACION DIRECTA EN LUGAR DEL TOPIC ##
+        ############################################################
+
+
+        #### Llamadas a Main ####
+
+        f = open("proxys/main", "r")
+        l=f.readline()       
+        f.close()
+        pAut = self.communicator().stringToProxy(l)
+        mai= IceFlix.MainPrx.checkedCast(pAut)
+    ############
+        obtenAut = mai.getAuthenticator()
+        print("He leido un proxy cojonudo de un archivo: \n")
+        print(obtenAut)
+        #mai.getCatalogService()
+
+
+        #### SERVICE AVAILABILITY ####
+
+        f = open("proxys/serviceAvailability", "r")
+        l=f.readline()       
+        f.close()
+        pServiceA = self.communicator().stringToProxy(l)
+        serviceA= IceFlix.ServiceAvailabilityPrx.checkedCast(pServiceA)
+    ############
+        #serviceA.catalogService("Hola catalogo")
+        #serviceA.authenticationService("Hola autenticator ")
+        #serviceA.mediaService("Hola media")
+
+
+        #### lLAMADAS A CATALOG ####
+
+        f = open("proxys/catalogo", "r")
+        l=f.readline()       
+        f.close()
+        pCatalogo = self.communicator().stringToProxy(l)
+        catalogo= IceFlix.MediaCatalogPrx.checkedCast(pCatalogo)
+    ############ Comprobacion estandar:
+        print(catalogo.getTile("Id10"))
+        print(catalogo.getTilesByName("name2", False))        #Probar el True
+        catalogo.getTilesByTags(["tag0" , "tag4"], False)     #El True creo que no va
+        catalogo.renameTile("Id20", "nuevoNombre100", "aut")
+        catalogo.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+        catalogo.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+
+    ############ Comprobacion de errores:
+        #catalogo.getTile("Id10dd")
+        #catalogo.getTilesByName("name2dd", False)          
+        #catalogo.getTilesByTags(["tag0" , "tag4"], True)    
+        #catalogo.renameTile("Id2022", "nuevoNombre100", "aut")
+        #catalogo.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
+        #atalogo.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
+
+
+
+
+                    #########################
+                    ## LLAMADAS Y TESTEOS  ##
+                    #########################
+
+    #####################
+        ## Llamadas a ServiceAvailability
+
+        #available = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
+        #available.catalogService("Hola catalogo")
+        #available.authenticationService("Hola autenticator ")
+        #available.mediaService("Hola media")
+
+
+    ######################
+        ## Llamadas a Main 
+
+        #mai= IceFlix.MainPrx.uncheckedCast(publisher)
+        #obtenAut = mai.getAuthenticator()
+        #print(obtenAut)
+        #mai.getCatalogService()
+
+
+    #######################
+        ## Llamadas a Prueba
+         
+        #prueba = IceFlix.PruebaPrx.checkedCast(publisher)
         #try:
         #v = prueba.getPrueba()
         #except Ice.UnmarshalOutOfBoundsException:
             #print ("tratando error de unmarshal")
+        #prueba.pruebaVacio()
      
-        #printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        #printer.authenticationService()
         
-        #printer = IceFlix.MainPrx.uncheckedCast(publisher)
-        #aut = IceFlix.MainPrx.uncheckedCast(publisher)
-        #obtenAut = aut.getAuthenticator("toma")
-        #print(obtenAut)
-        
-        #printer.getCatalogService()
-
-        med = IceFlix.MediaCatalogPrx.uncheckedCast(publisher)
+    ######################
+        ## Llamadas a Catalog Media       
+ 
+        #med = IceFlix.MediaCatalogPrx.uncheckedCast(publisher)
         #dameCatalogo = med.getTile("idd")
-       # print (dameCatalogo)
+        #print (dameCatalogo)
 
-        #damePorNombre = med.getTilesByName("name2", False)
-        #print (damePorNombre)    
+        #med.getTilesByName("name2", False)
+            
 
         #damePorTags = med.getTilesByTags(["tag0" , "tag4"], True)    
         #print (damePorTags)
 
-        #renombra = med.renameTile("iii20", "nuevoNombre2", "aut")
+        #med.renameTile("Id2022", "nuevoNombre100", "aut")
 
         #anadeTags = med.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
 
-        borraTags = med.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
-
-        #algo similar a esto-> aut = topic.getPublisher()
-        #aut = IceFlix.MainPrx.uncheckedCast(publisher)
-        #aut.catalogService("Hola mundo")
-        
-
-        #printer.catalogService("Hola catalogo")
-       # printer.authenticationService("Hola autenticator ")
-       # printer.mediaService("Hola media")
-
-
+        #borraTags = med.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
+          
         return 0
         
-
 
 sys.exit(Publisher().main(sys.argv))

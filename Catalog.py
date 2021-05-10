@@ -15,21 +15,16 @@ class MediaCatalog (IceFlix.MediaCatalog):
             # ToDo Controlar cuando el archivo esta vacio.
             # Y TemporaryUnavailable
             data = json.load(f)
-            #print(data)
-            
+           
         #recorrer el json
         found=False
         try:
             for media in data["peliculas"]:
                 if(media["id"] == id):
                     encontrado = media
-                    found=True
-                #print (value)
-                
-                #for hijo in value:
-                #   print (hijo)
-                #  print (hijo["name"])
-                # print (hijo["tags"])
+                    print("Lo encontre! ")
+                    print(encontrado)
+                    found=True               
             if not found:
                 raise IceFlix.WrongMediaId
         except IceFlix.WrongMediaId: 
@@ -51,43 +46,32 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     if(name.lower() in media["info"]["name"].lower()):
                         encontrado = media["id"]
                         #print (encontrado)
-                        lista.append(encontrado)
-            
+                        lista.append(encontrado)           
             print(lista)
+
 
     def getTilesByTags(self, tags, includeAllTags, current=None):
         with open('catalogo.json') as f:
             data = json.load(f)
 
             listaADevolver = list()
-
             if(includeAllTags == False):
-
                 for media in data["peliculas"]:
-
-                    for tag in tags:
-                        
+                    for tag in tags:                      
                         if(tag) in media["info"]["tags"]:
                             encontrado = media["id"]
                             #print (encontrado)
                             listaADevolver.append(encontrado)
-
             else:
-
                 for media in data["peliculas"]:
-
                     if(sorted(tags) == sorted(media["info"]["tags"])):
                         encontrado = media["id"]
-                        listaADevolver.append(encontrado)
-                    
-
+                        listaADevolver.append(encontrado)                   
             print(listaADevolver)
 
 
     def renameTile(self, id, name, authentication, current=None):
-
         #ToDo comprobar Authentication
-
         jsonFile = open("catalogo.json", "r") # Open the JSON file for reading
         data = json.load(jsonFile) # Read the JSON into the buffer
         jsonFile.close() # Close the JSON file
@@ -98,27 +82,27 @@ class MediaCatalog (IceFlix.MediaCatalog):
                 if(media["id"] == id):
                     encontrado = media
                     found=True
-
+                    print("CAmbiado el nombre de: ")
+                    print(encontrado["info"]["name"])
                     ## Working with buffered content
-                    encontrado["info"]["name"] = name
-                    
+                    encontrado["info"]["name"] = name                 
                     ## Save our changes to JSON file
                     jsonFile = open("catalogo.json", "w+")
                     jsonFile.write(json.dumps(data, indent = 4))
                     jsonFile.close()
-
             if not found:
                 raise IceFlix.WrongMediaId
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
 
+
     def addTags(self, id, tags, authentication, current=None):
 
         #ToDo comprobar Authentication
                         
-        jsonFile = open("catalogo.json", "r") # Open the JSON file for reading
-        data = json.load(jsonFile) # Read the JSON into the buffer
-        jsonFile.close() # Close the JSON file
+        jsonFile = open("catalogo.json", "r") 
+        data = json.load(jsonFile) 
+        jsonFile.close()
 
         found=False
         try:
@@ -126,46 +110,38 @@ class MediaCatalog (IceFlix.MediaCatalog):
                 if(media["id"] == id):
                     encontrado = media
                     found=True
-
-                    ## Working with buffered content
                     encontrado["info"]["tags"].extend(tags)
-                    
-                    ## Save our changes to JSON file
+                    print("Añadidos los tags: ")
+                    print(encontrado["info"]["tags"])
+
                     jsonFile = open("catalogo.json", "w+")
                     jsonFile.write(json.dumps(data, indent = 4))
                     jsonFile.close()
-
             if not found:
                     raise IceFlix.WrongMediaId
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
 
 
-
     def removeTags(self, id, tags, authentication, current=None):
-
+        #Utilizando el recorrido inverso tambien borramos tags repes :)
         #ToDo comprobar Authentication
-        jsonFile = open("catalogo.json", "r") # Open the JSON file for reading
-        data = json.load(jsonFile) # Read the JSON into the buffer
-        jsonFile.close() # Close the JSON file
+        jsonFile = open("catalogo.json", "r") 
+        data = json.load(jsonFile) 
+        jsonFile.close() 
 
         found=False
         try:
             for media in data["peliculas"]:
                 if(media["id"] == id):
                     encontrado = media
-                    found=True
-
-                    ## Working with buffered content
+                    found=True  #Recorremos tags al reves para no interferir
                     i = len(encontrado["info"]["tags"])-1
-                    for tagEncontrado in reversed(encontrado["info"]["tags"]):
-                        
+                    for tagEncontrado in reversed(encontrado["info"]["tags"]):                        
                         for tagParams in tags:  
-
                             if(tagParams == tagEncontrado):
                                 print("Encuentro tag a borrar: "+ tagParams)
                                 del(encontrado["info"]["tags"][i])
-                            # borrar.append(i)
                         i-=1
             if not found:
                     raise IceFlix.WrongMediaId
@@ -178,12 +154,8 @@ class MediaCatalog (IceFlix.MediaCatalog):
         jsonFile.close()
 
 
-
        
-   
-#throws WrongMediaId, TemporaryUnavailable;
-
-class Autenticador(Ice.Application):
+class Catalogo(Ice.Application):
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
         proxy = self.communicator().propertyToProxy(key)
@@ -200,39 +172,38 @@ class Autenticador(Ice.Application):
             print("Invalid proxy")
             return 2
 
-        ic = self.communicator()
+        broker = self.communicator()
         servant = MediaCatalog ()
-        adapter = ic.createObjectAdapter("MediaCatalogAdapter")
-        MServer = adapter.addWithUUID(servant)
+        adapter = broker.createObjectAdapter("MediaCatalogAdapter")
+        catalogServer = adapter.addWithUUID(servant)
 
-        topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
+        topic_name = "ServiceAvailability" 
         qos = {}
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
-        topic.subscribeAndGetPublisher(qos, MServer)
-        print("Clase server media..'{}'".format(MServer))
+        topic.subscribeAndGetPublisher(qos, catalogServer)
+        print("Clase server media..'{}'".format(catalogServer))
 
         adapter.activate()
 
         #nuevo checkedCast
-        catalogprx = IceFlix.MediaCatalogPrx.checkedCast(MServer)
+        catalogprx = IceFlix.MediaCatalogPrx.checkedCast(catalogServer)
 
         publisher = topic.getPublisher()
         print("Soy Catalog PROVIDER :  \n")
         print(catalogprx)
-        printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-
-        printer.catalogService(catalogprx,"idPrueba")
+        catalogo = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
+        catalogo.catalogService(catalogprx,"idPrueba")
 
         self.shutdownOnInterrupt()
-        ic.waitForShutdown()
+        broker.waitForShutdown()
 
-        topic.unsubscribe(subscriber)
+        topic.unsubscribe(catalogServer)
 
         return 0
 
 
-sys.exit(Autenticador().main(sys.argv))
+sys.exit(Catalogo().main(sys.argv))

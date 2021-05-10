@@ -11,54 +11,79 @@ import time
 
 class Main(IceFlix.Main):
     def getAuthenticator(self, current=None):
-        try:
-            # f = open("listaAut", "r")
-            # l=f.readline()
-            # print(f.read())
-            # f.close()
-            #l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
-            r=l.rstrip(l[-1])
-        except TemporaryUnavailable:
-            raise
-        return r
+                                      
+        #l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
+        f = open("proxys/listaAut", "r")
+        l=f.readline()
+        #broker=self.communicator()
+        #r=IceFlix.AuthenticatorPrx.checkedCast(broker.stringToProxy(l))
+        f.close()
+        
+        return l
 
         
     def getCatalogService(self, current=None):
-        print("Event received: {0}".format(message))
+        print("Get Catalog Service: ")
         sys.stdout.flush()
         catalog=5
-        return catalog
+        
+        #return catalog
+
+
+    ########### Clase  Prueba  ##############
 
 class Prueba(IceFlix.Prueba):
  
     def getPrueba(self, current=None):
-        print("MAIN")
+        print("PRUEBA\n")
         print("Event received: ".format())
         sys.stdout.flush()
 
         f = open("listaAut", "r")
         l=f.readline()
-        print(l)
+        print("Soy prueba y voy a devolver: "+l+"\n")
         f.close()
 
-        return str(l)
+        return l
+    
+
+    def pruebaVacio(self,current=None):
+        print("PRUEBA VACIO\n")
+        f = open("listaAut", "r")
+        l=f.readline()
+        print("\nESTE ES EL AUTENTICADOR: "+l+"\n")
+        f.close
+    ########### 
 
 class ServiceAvailability (IceFlix.ServiceAvailability ):
     def catalogService(self, message, id,current=None):
-        print("Event received: {0}".format(message))
+        f = open("proxys/catalogo", "w")
+        l=str(message)
+        f.write(l)
+        f.close()
+        print("Catalogo recibido {0}".format(message))
         sys.stdout.flush()
 
     def authenticationService(self, message,id, current=None):
-        print("Event received: {0}".format(message))
+        f = open("proxys/listaAut", "w")
+        l=str(message)
+        f.write(l)
+        f.close()
+        print("autenticador recibido {0}".format(message))
         sys.stdout.flush()
 
+
     def mediaService(self, message, id,current=None):
-        print("Event received: {0}".format(message))
+        f = open("proxys/serviceAvailability", "w")
+        l=str(message)
+        f.write(l)
+        f.close()
+        print("Media Stream recibido: {0}".format(message))
         sys.stdout.flush()
       
 
 
-class Subscriber(Ice.Application):
+class MainServer(Ice.Application):
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
         proxy = self.communicator().propertyToProxy(key)
@@ -75,15 +100,17 @@ class Subscriber(Ice.Application):
             print("Invalid proxy")
             return 2
 
-        ic = self.communicator()
+        broker = self.communicator()
         servant = ServiceAvailability ()
         servantPrueba = Prueba()
-        adapter = ic.createObjectAdapter("MainAdapter")
+        servantMain=Main()
+        adapter = broker.createObjectAdapter("MainAdapter")
         MServer = adapter.addWithUUID(servant)
         MServerPrueba = adapter.addWithUUID(servantPrueba)
+        MServerMain = adapter.addWithUUID(servantMain)
 
 
-        topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
+        topic_name = "ServiceAvailability" 
         qos = {}
         listaAut={"792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000"}
         try:
@@ -91,9 +118,25 @@ class Subscriber(Ice.Application):
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
+    #######
+        # Escritura de proxys en sus archivos
         topic.subscribeAndGetPublisher(qos, MServer)
+        f = open("proxys/serviceAvailability", "w")
+        f.write(str(MServer))       
+        f.close()
+
         topic.subscribeAndGetPublisher(qos, MServerPrueba)
-        print("Waiting events... '{}'".format(MServer))
+        f = open("proxys/prueba", "w")
+        f.write(str(MServerPrueba))       
+        f.close()
+
+        topic.subscribeAndGetPublisher(qos, MServerMain)
+        f = open("proxys/main", "w")
+        f.write(str(MServerMain))       
+        f.close()
+
+        print("Main server en marcha!")
+       
         #f = open("listaAut", "r")
         #l=f.read()
         #print(l)
@@ -102,12 +145,13 @@ class Subscriber(Ice.Application):
 
         adapter.activate()
         self.shutdownOnInterrupt()
-        ic.waitForShutdown()
+        broker.waitForShutdown()
 
         topic.unsubscribe(MServer)
         topic.unsubscribe(MServerPrueba)
+        topic.unsubscribe(MServerMain)
 
         return 0
 
 
-sys.exit(Subscriber().main(sys.argv))
+sys.exit(MainServer().main(sys.argv))
