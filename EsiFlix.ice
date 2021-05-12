@@ -74,10 +74,9 @@ module IceFlix {
     ///////////// Auth server /////////////
 
     interface Authenticator {
-        /////////////string refreshAuthorization(string user, string passwordHash) throws Unauthorized/////////////
-        void refreshAuthorization(string user);
-        /////////////bool isAuthorized(string authentication);/////////////
-        void isAuthorized(string authentication);
+        string refreshAuthorization(string user, string passwordHash) throws Unauthorized;
+        void prueba();
+        bool isAuthorized(string authentication);
     };
 
     interface TokenRevocation {
@@ -89,20 +88,21 @@ module IceFlix {
     interface Main {
         Authenticator* getAuthenticator() throws TemporaryUnavailable;
     
-        int getCatalogService() throws TemporaryUnavailable;
+        MediaCatalog* getCatalogService() throws TemporaryUnavailable;
     };
 
     interface ServiceAvailability {
-       ///////////// void catalogService(MediaCatalog* service, string id);
+        void catalogService(MediaCatalog* service, string id);
         void authenticationService(Authenticator* service, string id);
-      /////////////  void mediaService(StreamProvider* service, string id);
+        void mediaService(StreamProvider* service, string id);
 
-        void catalogService(string id);
+        
         /////////////// void authenticationService(string id);
-        void mediaService(string id);
+       
     };
 
     interface Prueba{
         string getPrueba();
+        void pruebaVacio();
     };
 };
