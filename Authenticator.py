@@ -10,14 +10,12 @@ import IceFlix
 
 class Authenticator(IceFlix.Authenticator):
     def refreshAuthorization(self, message, current=None):
-        print("Refresh Authorization: {0}".format(message))
+        print("Buenos dias: {0}".format(message))
         sys.stdout.flush()
         
     def isAuthorized(self, message, current=None):
-        print("Is authorized: {0}".format(message))
+        print("Buenas noches: {0}".format(message))
         sys.stdout.flush()
-
-######### Clase prueba para los testeos de Unmarshal ######
 
 class Prueba(IceFlix.Prueba):
     
@@ -27,7 +25,7 @@ class Prueba(IceFlix.Prueba):
         print("Event received: {0}".format(msg))
         sys.stdout.flush()
 
-##############
+
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):
@@ -46,12 +44,12 @@ class Autenticador(Ice.Application):
             print("Invalid proxy")
             return 2
 
-        broker = self.communicator()
+        ic = self.communicator()
         servant = Authenticator()
-        adapter = broker.createObjectAdapter("AuthenticatorAdapter")
-        autServer = adapter.addWithUUID(servant)
+        adapter = ic.createObjectAdapter("AuthenticatorAdapter")
+        MServer = adapter.addWithUUID(servant)
 
-        topic_name = "ServiceAvailability" 
+        topic_name = "ServiceAvariability" #cambiar a ServiceAvariability
         qos = {}
         
         try:
@@ -59,16 +57,21 @@ class Autenticador(Ice.Application):
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
-        topic.subscribeAndGetPublisher(qos, autServer)
-        print("Autenticando credenciales...'{}'".format(autServer))
+        topic.subscribeAndGetPublisher(qos, MServer)
+        print("Autenticando credenciales...'{}'".format(MServer))
 
         adapter.activate()
         #me he llevado 2 lineas de cerrar servicio
-       
+
+        #topic.unsubscribe(MServer)
 
         #parte publicadora
         #topic_mgr = self.get_topic_manager()
+        #if not topic_mgr:
+            #print('Invalid proxy')
+            #return 2
 
+        # = "ServiceAvariability"
         #topic_name2 = "ServiceAvariability2"
         #try:
             #topic = topic_mgr.retrieve(topic_name)
@@ -78,19 +81,27 @@ class Autenticador(Ice.Application):
             #topic = topic_mgr.create(topic_name)
             #topic2 = topic_mgr.create(topic_name2)
 
+        #probar toString
+        MServerToString=str(MServer)
+        x = MServerToString.split(":")
+        stringBueno = x[0]+":"+x[1]
+
+        #stringToProxy
+        proxyBueno = ic.stringToProxy(stringBueno)
 
         #nuevo checkedCast
+        autprx = IceFlix.AuthenticatorPrx.checkedCast(MServer)
 
-        autprx = IceFlix.AuthenticatorPrx.checkedCast(autServer)
         publisher = topic.getPublisher()
-        aut = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        aut.authenticationService(autprx,"idPrueba")
+        printer = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
 
-        topic.unsubscribe(autServer)
+        printer.authenticationService(autprx,"idPrueba")
+
+        topic.unsubscribe(MServer)
 
         #las 2 lineas de cerrar servicio
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        ic.waitForShutdown()
 
         return 0
 

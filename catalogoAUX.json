@@ -3,41 +3,20 @@
         {
             "id": "Id10",
             "provider": "python",
-            "info": {
-                "name": "name1",
-                "tags": [
-                    "tag1",
-                    "tag2"
-                ]
-            }
+            "info": {"name" : "name1" , 
+                     "tags" : ["tag1", "tag2"]}
         },
         {
             "id": "Id20",
-            "provider": "nuevoProvider2",
-            "info": {
-                "name": "nuevoNombre2",
-                "tags": [
-                    "tag3",
-                    "tag4",
-                    "nuevaTag1",
-                    "nuevaTag3",
-                    "nuevaTag4",
-                    "nuevaTag2",
-                    "nuevaTag5",
-                    "tag5"
-                ]
-            }
+            "provider": "python",
+            "info": {"name" : "Name2" , 
+                     "tags" : ["tag3", "tag4"]}
         },
         {
             "id": "Id30",
-            "provider": "prov3",
-            "info": {
-                "name": "name200",
-                "tags": [
-                    "tag4",
-                    "tag3"
-                ]
-            }
+            "provider": "python",
+            "info": {"name" : "name200" , 
+                     "tags" : ["tag4", "tag3"]}
         }
     ]
 }

@@ -4,7 +4,7 @@
             "id": "Id10",
             "provider": "python",
             "info": {
-                "name": "name2",
+                "name": "name1",
                 "tags": [
                     "tag1",
                     "tag2"
@@ -13,15 +13,13 @@
         },
         {
             "id": "Id20",
-            "provider": "Provider2",
+            "provider": "nuevoProvider2",
             "info": {
-                "name": "nuevoNombre100",
+                "name": "nuevoNombre2",
                 "tags": [
                     "tag3",
                     "tag4",
-                    "nuevaTag3",
-                    "nuevaTag4",
-                    "nuevaTag5",
+                    "nuevaTag2",
                     "tag5"
                 ]
             }
@@ -33,8 +31,7 @@
                 "name": "name200",
                 "tags": [
                     "tag4",
-                    "tag3",
-                    "tag0"
+                    "tag3"
                 ]
             }
         }
