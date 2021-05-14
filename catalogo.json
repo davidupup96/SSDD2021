@@ -37,6 +37,46 @@
                     "tag0"
                 ]
             }
+        },
+        {
+            "id": "newMEdia",
+            "provider": "providerId",
+            "info": {
+                "name": "Nomnbre genial",
+                "tags": []
+            }
+        },
+        {
+            "id": "id",
+            "provider": "providerId",
+            "info": {
+                "name": "initialName",
+                "tags": []
+            }
+        },
+        {
+            "id": "6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d",
+            "provider": "providerId",
+            "info": {
+                "name": "initialName",
+                "tags": []
+            }
+        },
+        {
+            "id": "2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f",
+            "provider": "providerId",
+            "info": {
+                "name": "initialName",
+                "tags": []
+            }
+        },
+        {
+            "id": "63312534ae13759d1183cdab38c2db7589ab769fa7d7f46d2f8c2bb7",
+            "provider": "providerId",
+            "info": {
+                "name": "initialName",
+                "tags": []
+            }
         }
     ]
 }

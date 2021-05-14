@@ -31,32 +31,35 @@ class Authenticator(IceFlix.Authenticator):
                     found=True             
 
                     #hacer el timer
-                    #t = threading.Timer(5.0, Authenticator.prueba())
-                    #t.start()  
+                    t = threading.Timer(5.0, Authenticator.prueba,(self,))
+                    t.start()  
+                    #t.cancel para parar cuando el stream
             if not found:
                 raise IceFlix.Unauthorized
         except IceFlix.Unauthorized: 
             print("La persona buscada no existe")
 
+        ########################
+        ########################
         ## a continuacion vamos a escribir en tokens.json el id de este usuario
         jsonFile = open("tokens.json", "r+") # Open the JSON file for reading
         data = json.load(jsonFile) # Read the JSON into the buffer
         #jsonFile.close() # Close the JSON file
 
-        nuevoToken = {"id": "Dani",
-     "valor": "nikhil@geeksforgeeks.org"
-    }
+        nuevoToken = {}
+        nuevoToken['id'] = "Dani"
+        nuevoToken['valor'] = "nikhil@geeksforgeeks.org"
 
         print(nuevoToken)
 
-        data.update(nuevoToken) 
+        data["tokens"].append(nuevoToken) 
 
         print (data)
 
         # Sets file's current position at offset.
         jsonFile.seek(0)
         # convert back to json.
-        json.dump(data, jsonFile, indent = 4)
+        json.dump(data, jsonFile, ensure_ascii=False, indent = 4)
         jsonFile.close() # Close the JSON file
                 
         ## Save our changes to JSON file

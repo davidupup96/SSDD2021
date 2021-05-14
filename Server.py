@@ -25,7 +25,7 @@ class Main(IceFlix.Main):
         
             f.close()
         
-            if l is None or l is "":
+            if l is None or l == "":
                     raise IceFlix.TemporaryUnavailable
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Authenticator no esta disponible")
@@ -48,7 +48,7 @@ class Main(IceFlix.Main):
         
             f.close()
 
-            if l is None or l is "":
+            if l is None or l == "":
                     raise IceFlix.TemporaryUnavailable
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Catalog no esta disponible")
@@ -106,7 +106,7 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
 
 
     def mediaService(self, message, id,current=None):
-        f = open("proxys/serviceAvailability", "w")
+        f = open("proxys/streamProvider", "w")
         l=str(message)
         f.write(l)
         f.close()

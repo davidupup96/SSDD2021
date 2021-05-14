@@ -7,6 +7,9 @@ import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 
+import os
+import hashlib
+
 
 class StreamProvider(IceFlix.StreamProvider):
 
@@ -19,7 +22,36 @@ class StreamProvider(IceFlix.StreamProvider):
         sys.stdout.flush()
 
     def reannounceMedia(self, current=None):
+        #Hay que guardar una lista como dijo Tobias de tuplas
+        #id y streamController para determinar aqui facil quien ya 
+        #existe y quien es nuevo o ha desaparecido para reenviar a
+        #catalogo con newMedia.
+
+        #Codigo premilinar por si hacemos uso de el:
+        topic_name_newMedia = "MediaAnnouncements"
+
+        try:
+            topic_newMedia = MediaStream.topic_mgr.retrieve(topic_name_newMedia)
+
+        except IceStorm.NoSuchTopic:
+            print("no such topic found, creating")
+            topic_newMedia = MediaStream.topic_mgr.create(topic_name_newMedia)
+        publisher_newMedia = topic_newMedia.getPublisher()
+
+        nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
+
+    #############################################
         print("reanounce")
+
+        basepath = 'media/'
+        for entry in os.listdir(basepath):
+            print(entry)
+
+
+class StreamerSync(IceFlix.StreamerSync):
+
+    def requestAuthentication(self, id, authentication, current=None):
+        print("RequestAutentication en STREAMERSYNC")
 
 
 class StreamController(IceFlix.StreamController):
@@ -34,6 +66,7 @@ class StreamController(IceFlix.StreamController):
 
     def stop(self, current=None):
         print("stop")
+
 
 
 
@@ -80,6 +113,42 @@ class MediaStream(Ice.Application):
         media = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
 
         media.mediaService(streamprx,"idPrueba")
+
+
+        ############################################################
+        ##   LA LLAMADA A NEW MEDIA PARA LLENAR EL CATALOGO       ##
+        ############################################################
+
+
+        topic_name_newMedia = "MediaAnnouncements"
+
+        try:
+            topic_newMedia = topic_mgr.retrieve(topic_name_newMedia)
+
+        except IceStorm.NoSuchTopic:
+            print("no such topic found, creating")
+            topic_newMedia = topic_mgr.create(topic_name_newMedia)
+        publisher_newMedia = topic_newMedia.getPublisher()
+
+        nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
+
+       
+        # Iniciamos leyendo el directorio de medias
+        basepath = 'media/'
+        for entry in os.listdir(basepath):
+            # Ahora calculamos el SHA256 de cada fichero leido
+            id=hashlib.sha224(entry.encode()).hexdigest()
+            print(id)
+            # Ahora tendriamos que llamr a la factoria StreamProvider
+            #para crear un StreamController para este media
+            
+            #Por ultimo se harian las llamadas a newMedia para meterlas
+            #en el catalogo    
+
+            nuevoMEdia.newMedia( id, "initialName", "providerId" )
+        print("\n Ya añadi los media al catalogo.")
+
+
        
 
         self.shutdownOnInterrupt()

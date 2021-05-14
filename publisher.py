@@ -25,14 +25,12 @@ class Publisher(Ice.Application):
             return 2
 
         topic_name = "ServiceAvailability"
-        #topic_name2 = "ServiceAvariability2"
+
         try:
             topic = topic_mgr.retrieve(topic_name)
-            #topic2 = topic_mgr.retrieve(topic_name2)
         except IceStorm.NoSuchTopic:
             print("no such topic found, creating")
             topic = topic_mgr.create(topic_name)
-            #topic2 = topic_mgr.create(topic_name2)
 
         publisher = topic.getPublisher()
 
@@ -57,6 +55,7 @@ class Publisher(Ice.Application):
         ############################################################
 
 
+        ######################
         #### Llamadas a Main ####
 
         f = open("proxys/main", "r")
@@ -64,9 +63,8 @@ class Publisher(Ice.Application):
         f.close()
         pAut = self.communicator().stringToProxy(l)
         mai= IceFlix.MainPrx.checkedCast(pAut)
-    ############
-        obtenAut = mai.getAuthenticator()
-        
+    ############ Comprobacion estandar:
+        obtenAut = mai.getAuthenticator()      
         if obtenAut is not None:
             print("He leido un proxy cojonudo de un archivo: \n")
             print(obtenAut)
@@ -77,7 +75,7 @@ class Publisher(Ice.Application):
             print(obtenCat)
 
 
-
+        ######################
         #### SERVICE AVAILABILITY ####
 
         f = open("proxys/serviceAvailability", "r")
@@ -85,25 +83,27 @@ class Publisher(Ice.Application):
         f.close()
         pServiceA = self.communicator().stringToProxy(l)
         serviceA= IceFlix.ServiceAvailabilityPrx.checkedCast(pServiceA)
-    ############
+    ############ Comprobacion estandar:
         #serviceA.catalogService("Hola catalogo")
         #serviceA.authenticationService("Hola autenticator ")
         #serviceA.mediaService("Hola media")
 
+
+        ######################
         #### LLAMADAS A AUTHENTICATOR ####
         f = open("proxys/listaAut", "r")
         l=f.readline()       
         f.close()
         pAuth = self.communicator().stringToProxy(l)
         authent= IceFlix.AuthenticatorPrx.checkedCast(pAuth)
-
-        prueba = authent.refreshAuthorization("Cristian","p1")
-        print (prueba)
-
+    ############ Comprobacion estandar:
+        #prueba = authent.refreshAuthorization("Cristian","p1")
+        #print (prueba)
         #isAut = authent.isAuthorized("ElT1")
         #print (isAut)
 
 
+        ######################
         #### lLAMADAS A CATALOG ####
 
         f = open("proxys/catalogo", "r")
@@ -128,12 +128,27 @@ class Publisher(Ice.Application):
         #atalogo.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
 
 
+    ######################
+        #### lLAMADAS A Media Stream####
+
+        f = open("proxys/streamProvider", "r")
+        l=f.readline()       
+        f.close()
+        pStreamProvider = self.communicator().stringToProxy(l)
+        streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)
+    ############ Comprobacion estandar:
+        streamProvider.reannounceMedia()
+
+
+
+
 
 
                     #########################
                     ## LLAMADAS Y TESTEOS  ##
                     #########################
 
+    ######################
     #####################
         ## Llamadas a ServiceAvailability
 
@@ -144,6 +159,7 @@ class Publisher(Ice.Application):
 
 
     ######################
+    ######################
         ## Llamadas a Main 
 
         #mai= IceFlix.MainPrx.uncheckedCast(publisher)
@@ -152,6 +168,7 @@ class Publisher(Ice.Application):
         #mai.getCatalogService()
 
 
+    ######################
     #######################
         ## Llamadas a Prueba
          
@@ -162,7 +179,8 @@ class Publisher(Ice.Application):
             #print ("tratando error de unmarshal")
         #prueba.pruebaVacio()
      
-        
+
+    ######################   
     ######################
         ## Llamadas a Catalog Media       
  
@@ -187,6 +205,27 @@ class Publisher(Ice.Application):
         #### LLAMADAS A TOKEN (REVOKE) ####
         #tok = IceFlix.TokenRevocationPrx.uncheckedCast(publicador)
         #tok.revoke("ElToken1")
+
+
+    ######################
+    ######################
+        ## Llamadas a Catalog Media  
+
+        topic_name_newMedia = "MediaAnnouncements"
+
+        try:
+            topic_newMedia = topic_mgr.retrieve(topic_name_newMedia)
+        except IceStorm.NoSuchTopic:
+            print("no such topic found, creating")
+            topic_newMedia = topic_mgr.create(topic_name_newMedia)
+
+        publisher_newMedia = topic_newMedia.getPublisher()
+        nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
+
+        #nuevoMEdia.newMedia( "id", "initialName", "providerId" )
+        #print("\n He hecho un newMedia espectacular!")
+
+
           
         return 0
         
