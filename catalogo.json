@@ -18,7 +18,6 @@
                 "name": "nuevoNombre100",
                 "tags": [
                     "tag3",
-                    "tag4",
                     "nuevaTag3",
                     "nuevaTag4",
                     "nuevaTag5",
@@ -32,7 +31,7 @@
             "info": {
                 "name": "name200",
                 "tags": [
-                    "tag4",
+                    
                     "tag3",
                     "tag0"
                 ]
@@ -56,7 +55,7 @@
         },
         {
             "id": "6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d",
-            "provider": "providerId",
+            "provider": "B44346AD-9AFA-4795-9BC1-319F3A9749C9 -t -e 1.1:tcp -h 192.168.1.83 -p 42991 -t 60000:tcp -h 192.168.1.13 -p 42991 -t 60000",
             "info": {
                 "name": "initialName",
                 "tags": []
@@ -64,7 +63,7 @@
         },
         {
             "id": "2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f",
-            "provider": "providerId",
+            "provider": "B44346AD-9AFA-4795-9BC1-319F3A9749C9 -t -e 1.1:tcp -h 192.168.1.83 -p 42991 -t 60000:tcp -h 192.168.1.13 -p 42991 -t 60000",
             "info": {
                 "name": "initialName",
                 "tags": []
@@ -72,10 +71,12 @@
         },
         {
             "id": "63312534ae13759d1183cdab38c2db7589ab769fa7d7f46d2f8c2bb7",
-            "provider": "providerId",
+            "provider": "B44346AD-9AFA-4795-9BC1-319F3A9749C9 -t -e 1.1:tcp -h 192.168.1.83 -p 42991 -t 60000:tcp -h 192.168.1.13 -p 42991 -t 60000",
             "info": {
                 "name": "initialName",
-                "tags": []
+                "tags": [
+                    "tag4"
+                ]
             }
         }
     ]

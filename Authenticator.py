@@ -11,8 +11,8 @@ import threading
 
 
 class Authenticator(IceFlix.Authenticator):
-    def prueba(self, current=None):
-        print("hola")
+    # def prueba(self, current=None):
+    #     print("hola")
 
     def refreshAuthorization(self, user, passwordHash, current=None):
         #ToDo desde aqui se llama a TokenRevocation una vez pasados 30 segundos
@@ -31,7 +31,7 @@ class Authenticator(IceFlix.Authenticator):
                     found=True             
 
                     #hacer el timer
-                    t = threading.Timer(5.0, Authenticator.prueba,(self,))
+                    t = threading.Timer(5.0, Token.revoke,(self,))
                     t.start()  
                     #t.cancel para parar cuando el stream
             if not found:
@@ -123,13 +123,13 @@ class Token(IceFlix.TokenRevocation):
 
 ######### Clase prueba para los testeos de Unmarshal ######
 
-class Prueba(IceFlix.Prueba):
+# class Prueba(IceFlix.Prueba):
     
 
-    def getPrueba(self, msg, current=None):
-        print("AUTH")
-        print("Event received: {0}".format(msg))
-        sys.stdout.flush()
+#     def getPrueba(self, msg, current=None):
+#         print("AUTH")
+#         print("Event received: {0}".format(msg))
+#         sys.stdout.flush()
 
 ##############
 

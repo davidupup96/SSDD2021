@@ -54,28 +54,28 @@ class Main(IceFlix.Main):
 
     ########### Clase  Prueba  ##############
 
-class Prueba(IceFlix.Prueba):
+# class Prueba(IceFlix.Prueba):
  
-    def getPrueba(self, current=None):
-        print("PRUEBA\n")
-        print("Event received: ".format())
-        sys.stdout.flush()
+#     def getPrueba(self, current=None):
+#         print("PRUEBA\n")
+#         print("Event received: ".format())
+#         sys.stdout.flush()
 
-        f = open("listaAut", "r")
-        l=f.readline()
-        print("Soy prueba y voy a devolver: "+l+"\n")
-        f.close()
+#         f = open("listaAut", "r")
+#         l=f.readline()
+#         print("Soy prueba y voy a devolver: "+l+"\n")
+#         f.close()
 
-        return l
+#         return l
     
 
-    def pruebaVacio(self,current=None):
-        print("PRUEBA VACIO\n")
-        f = open("listaAut", "r")
-        l=f.readline()
-        print("\nESTE ES EL AUTENTICADOR: "+l+"\n")
-        f.close
-    ########### 
+#     def pruebaVacio(self,current=None):
+#         print("PRUEBA VACIO\n")
+#         f = open("listaAut", "r")
+#         l=f.readline()
+#         print("\nESTE ES EL AUTENTICADOR: "+l+"\n")
+#         f.close
+#     ########### 
 
 class ServiceAvailability (IceFlix.ServiceAvailability ):
     def __init__ (self, dic):
@@ -138,11 +138,11 @@ class MainServer(Ice.Application):
         "MediaStream":[],"Catalogo":[],"StreamerSync":[]} 
         broker = self.communicator()
         servant = ServiceAvailability (diccionario)
-        servantPrueba = Prueba()
+        # servantPrueba = Prueba()
         servantMain=Main(broker,diccionario)
         adapter = broker.createObjectAdapter("MainAdapter")
         MServer = adapter.addWithUUID(servant)
-        MServerPrueba = adapter.addWithUUID(servantPrueba)
+        # MServerPrueba = adapter.addWithUUID(servantPrueba)
         MServerMain = adapter.addWithUUID(servantMain)
 
 
@@ -179,10 +179,10 @@ class MainServer(Ice.Application):
         f.close()
         diccionario["Service_availability"].append(nuevoToken)
 
-        topic.subscribeAndGetPublisher(qos, MServerPrueba)
-        f = open("proxys/prueba", "w")
-        f.write(str(MServerPrueba))       
-        f.close()
+        # topic.subscribeAndGetPublisher(qos, MServerPrueba)
+        # f = open("proxys/prueba", "w")
+        # f.write(str(MServerPrueba))       
+        # f.close()
 
         topic.subscribeAndGetPublisher(qos, MServerMain)
         f = open("proxys/main", "w")
@@ -203,7 +203,7 @@ class MainServer(Ice.Application):
         broker.waitForShutdown()
 
         topic.unsubscribe(MServer)
-        topic.unsubscribe(MServerPrueba)
+        # topic.unsubscribe(MServerPrueba)
         topic.unsubscribe(MServerMain)
 
         return 0

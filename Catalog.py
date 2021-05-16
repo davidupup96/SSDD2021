@@ -7,9 +7,19 @@ import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 import json
+from IceFlix import Media
+
+#class Media (object):
+    # def __init__(self, id, provider, info):
+    #     self.id = id
+    #     self.provider = provider
+    #     self.info = info
 
 
 class MediaCatalog (IceFlix.MediaCatalog):
+    def __init__ (self, comunicador):
+        self.com = comunicador
+
     def getTile(self, id, current=None):
         with open('catalogo.json') as f:
             # ToDo Controlar cuando el archivo esta vacio.
@@ -18,17 +28,41 @@ class MediaCatalog (IceFlix.MediaCatalog):
            
         #recorrer el json
         found=False
+        encontrado = IceFlix.Media()
+
+        # servant_newMedia=StreamAnnounces()
+        # adapter = self.com.createObjectAdapter("StreamProviderAdapter")
+        # catalogServer = adapter.addWithUUID(servant_newMedia)
+
+        # catalogprx = IceFlix.MediaCatalogPrx.uncheckedCast(catalogServer)
+
         try:
             for media in data["peliculas"]:
                 if(media["id"] == id):
-                    encontrado = media
+                    listaTags = list(media["info"]["tags"])
+                    provider = IceFlix.StreamProviderPrx.checkedCast(self.com.stringToProxy(media["provider"]))
+                    print("VEMOS media[provider]")
+                    print(media["provider"])
+                    print("VEMOS TYPE")
+                    print(type(provider))
+                    print("VEMOS provider")
+                    print(provider)
+                    encontrado = IceFlix.Media(media["id"], provider, IceFlix.MediaInfo(media["info"]["name"],listaTags))
+                    #probando Media
+                    #encontrado = Media(media["id"],media["provider"],media["info"])
                     print("Lo encontre! ")
                     print(encontrado)
-                    found=True               
+                    found=True            
+                       
             if not found:
                 raise IceFlix.WrongMediaId
+    
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
+
+        print(encontrado)
+        print(type(encontrado))
+        return encontrado
             
 
     def getTilesByName(self, name, exact, current=None):
@@ -48,6 +82,8 @@ class MediaCatalog (IceFlix.MediaCatalog):
                         #print (encontrado)
                         lista.append(encontrado)           
             print(lista)
+        
+        return lista
 
 
     def getTilesByTags(self, tags, includeAllTags, current=None):
@@ -68,6 +104,8 @@ class MediaCatalog (IceFlix.MediaCatalog):
                         encontrado = media["id"]
                         listaADevolver.append(encontrado)                   
             print(listaADevolver)
+
+        return listaADevolver
 
 
     def renameTile(self, id, name, authentication, current=None):
@@ -220,7 +258,7 @@ class Catalogo(Ice.Application):
             return 2
 
         broker = self.communicator()
-        servant = MediaCatalog ()
+        servant = MediaCatalog (broker)
         servant_newMedia=StreamAnnounces()
         adapter = broker.createObjectAdapter("MediaCatalogAdapter")
         catalogServer = adapter.addWithUUID(servant)

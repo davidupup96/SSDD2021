@@ -107,9 +107,10 @@ class Publisher(Ice.Application):
 
 
     ############ Comprobacion estandar:
-        #print(obtenCat.getTile("Id10"))
-        #print(obtenCat.getTilesByName("name2", False))        #Probar el True
-        #obtenCat.getTilesByTags(["tag0" , "tag4"], False)     #El True creo que no va
+        print(obtenCat.getTile("Id10"))
+        print(obtenCat.getTilesByName("name2", False))        #Probar el True
+        listaCat = obtenCat.getTilesByTags(["tag4"], False)
+        print(listaCat)    #El True creo que no va
         #obtenCat.renameTile("Id20", "nuevoNombre100", "aut")
         #obtenCat.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
         #obtenCat.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
@@ -126,10 +127,10 @@ class Publisher(Ice.Application):
     ######################
         #### lLAMADAS A Media Stream####
 
-        f = open("proxys/streamProvider", "r")
-        l=f.readline()       
-        f.close()
-        pStreamProvider = self.communicator().stringToProxy(l)
+        #f = open("proxys/streamProvider", "r")
+        #l=f.readline()       
+        #f.close()
+        #pStreamProvider = self.communicator().stringToProxy(l)
         #streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)
     ############ Comprobacion estandar:
         #streamProvider.reannounceMedia()

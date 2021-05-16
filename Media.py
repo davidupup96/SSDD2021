@@ -12,10 +12,19 @@ import hashlib
 
 
 class StreamProvider(IceFlix.StreamProvider):
+    def __init__ (self, comunicador):
+        self.com = comunicador
 
-    def getStream(self, id, authentication, current=None):
-        print("Get Stream: {0}".format(message))
-        sys.stdout.flush()
+    def getStream(self, id, authentication, current):
+        servant = StreamController()
+        mediaServer = current.adapter.addWithUUID(servant)
+        streamprx = IceFlix.StreamControllerPrx.checkedCast(mediaServer)
+
+        print("dentro del getStream:")
+        print(streamprx)
+
+        return streamprx
+        
         
     def isAvailable(self, id, current=None):
         print("IsAvailable: {0}".format(message))
@@ -88,7 +97,7 @@ class MediaStream(Ice.Application):
             return 2
 
         broker = self.communicator()
-        servant = StreamProvider()
+        servant = StreamProvider(broker)
         adapter = broker.createObjectAdapter("StreamProviderAdapter")
         mediaServer = adapter.addWithUUID(servant)
 
@@ -145,7 +154,10 @@ class MediaStream(Ice.Application):
             #Por ultimo se harian las llamadas a newMedia para meterlas
             #en el catalogo    
 
-            nuevoMEdia.newMedia( id, "initialName", "providerId" )
+            providerPrueba = streamprx.getStream(id, "token")
+            print(providerPrueba)
+
+            nuevoMEdia.newMedia( id, "initialName", str(streamprx) )
         print("\n Ya añadi los media al catalogo.")
 
 
