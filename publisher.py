@@ -35,10 +35,10 @@ class Publisher(Ice.Application):
         publisher = topic.getPublisher()
 
         ## probando nuevo topic ##
-        topic_manager = self.get_topic_manager()
-        if not topic_manager:
-            print('Invalid proxy')
-            return 2
+        # topic_manager = self.get_topic_manager()
+        # if not topic_manager:
+        #     print('Invalid proxy')
+        #     return 2
 
         topic_tokens = "AuthenticationStatus"
         try:
@@ -64,14 +64,16 @@ class Publisher(Ice.Application):
         pAut = self.communicator().stringToProxy(l)
         mai= IceFlix.MainPrx.checkedCast(pAut)
     ############ Comprobacion estandar:
-        obtenAut = mai.getAuthenticator()      
+        obtenAut = mai.getAuthenticator()   
+ 
         if obtenAut is not None:
-            print("He leido un proxy cojonudo de un archivo: \n")
+            obtenAut.refreshAuthorization("Cristian","p1") 
+            print("He leido un proxy cojonudo de un Diccionario aun mejor qu el archivo: \n")
             print(obtenAut)
         
         obtenCat = mai.getCatalogService()
         if obtenCat is not None:
-            print("He leido un proxy cojonudo de un archivo: \n")
+            print("He leido un proxy cojonudo de un archivo Diccionario: \n")
             print(obtenCat)
 
 
@@ -85,47 +87,40 @@ class Publisher(Ice.Application):
         serviceA= IceFlix.ServiceAvailabilityPrx.checkedCast(pServiceA)
     ############ Comprobacion estandar:
         #serviceA.catalogService("Hola catalogo")
-        #serviceA.authenticationService("Hola autenticator ")
+        #serviceA.authenticationService("Hola autenticator ","id2")
         #serviceA.mediaService("Hola media")
+
+       # Main.dictionario_proxy[availabity[valor]]
 
 
         ######################
         #### LLAMADAS A AUTHENTICATOR ####
-        f = open("proxys/listaAut", "r")
-        l=f.readline()       
-        f.close()
-        pAuth = self.communicator().stringToProxy(l)
-        authent= IceFlix.AuthenticatorPrx.checkedCast(pAuth)
     ############ Comprobacion estandar:
-        #prueba = authent.refreshAuthorization("Cristian","p1")
+        #prueba = obtenAut.refreshAuthorization("Cristian","p1")
         #print (prueba)
-        #isAut = authent.isAuthorized("ElT1")
+        #isAut = obtenAut.isAuthorized("ElT1")
         #print (isAut)
 
 
         ######################
         #### lLAMADAS A CATALOG ####
 
-        f = open("proxys/catalogo", "r")
-        l=f.readline()       
-        f.close()
-        pCatalogo = self.communicator().stringToProxy(l)
-        catalogo= IceFlix.MediaCatalogPrx.checkedCast(pCatalogo)
+
     ############ Comprobacion estandar:
-        #print(catalogo.getTile("Id10"))
-        #print(catalogo.getTilesByName("name2", False))        #Probar el True
-        #catalogo.getTilesByTags(["tag0" , "tag4"], False)     #El True creo que no va
-        #catalogo.renameTile("Id20", "nuevoNombre100", "aut")
-        #catalogo.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
-        #catalogo.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+        #print(obtenCat.getTile("Id10"))
+        #print(obtenCat.getTilesByName("name2", False))        #Probar el True
+        #obtenCat.getTilesByTags(["tag0" , "tag4"], False)     #El True creo que no va
+        #obtenCat.renameTile("Id20", "nuevoNombre100", "aut")
+        #obtenCat.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+        #obtenCat.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
 
     ############ Comprobacion de errores:
-        #catalogo.getTile("Id10dd")
-        #catalogo.getTilesByName("name2dd", False)          
-        #catalogo.getTilesByTags(["tag0" , "tag4"], True)    
-        #catalogo.renameTile("Id2022", "nuevoNombre100", "aut")
-        #catalogo.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
-        #atalogo.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
+        #obtenCat.getTile("Id10dd")
+        #obtenCat.getTilesByName("name2dd", False)          
+        #obtenCat.getTilesByTags(["tag0" , "tag4"], True)    
+        #obtenCat.renameTile("Id2022", "nuevoNombre100", "aut")
+        #obtenCat.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
+        #obtenCat.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
 
 
     ######################
@@ -135,9 +130,9 @@ class Publisher(Ice.Application):
         l=f.readline()       
         f.close()
         pStreamProvider = self.communicator().stringToProxy(l)
-        streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)
+        #streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)
     ############ Comprobacion estandar:
-        streamProvider.reannounceMedia()
+        #streamProvider.reannounceMedia()
 
 
 
@@ -211,16 +206,16 @@ class Publisher(Ice.Application):
     ######################
         ## Llamadas a Catalog Media  
 
-        topic_name_newMedia = "MediaAnnouncements"
+        # topic_name_newMedia = "MediaAnnouncements"
 
-        try:
-            topic_newMedia = topic_mgr.retrieve(topic_name_newMedia)
-        except IceStorm.NoSuchTopic:
-            print("no such topic found, creating")
-            topic_newMedia = topic_mgr.create(topic_name_newMedia)
+        # try:
+        #     topic_newMedia = topic_mgr.retrieve(topic_name_newMedia)
+        # except IceStorm.NoSuchTopic:
+        #     print("no such topic found, creating")
+        #     topic_newMedia = topic_mgr.create(topic_name_newMedia)
 
-        publisher_newMedia = topic_newMedia.getPublisher()
-        nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
+        # publisher_newMedia = topic_newMedia.getPublisher()
+        # nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
 
         #nuevoMEdia.newMedia( "id", "initialName", "providerId" )
         #print("\n He hecho un newMedia espectacular!")

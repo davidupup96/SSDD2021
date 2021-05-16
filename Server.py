@@ -5,7 +5,7 @@ import sys
 import Ice
 import IceStorm
 Ice.loadSlice('EsiFlix.ice')
-import Server
+
 
 import time
 
@@ -13,51 +13,41 @@ import IceFlix
 
 class Main(IceFlix.Main):
     #este init es para poder acceder a un communicator fuera del run
-    def __init__ (self, comunicador):
+    def __init__ (self, comunicador,diccionario):
         self.com = comunicador
+        self.dic=diccionario
 
     def getAuthenticator(self, current=None):
                                       
         #l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
+        aut=None
         try:
-            f = open("proxys/listaAut", "r")
-            l=f.readline()
-        
-            f.close()
-        
-            if l is None or l == "":
+            aut=self.dic["Authenticator"][0]["valor"]
+            if aut is None or aut == "":
                     raise IceFlix.TemporaryUnavailable
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Authenticator no esta disponible")
+        except IndexError:
+            print("El servicio Authenticator no esta disponible")
 
-        #convertimos de tipo string a tipo proxy
-        #una vez que es proxy, decirque que es de tipo Authenticator
-        pr = self.com.stringToProxy(l)
-        x = IceFlix.AuthenticatorPrx.checkedCast(pr)
-
+        x = IceFlix.AuthenticatorPrx.checkedCast(aut)
         
         return x
 
-        
+         
     def getCatalogService(self, current=None):
-        
-        try:
-        
-            f = open("proxys/catalogo", "r")
-            l=f.readline()
-        
-            f.close()
+        aut=None
+        try:       
+            aut=self.dic["Catalogo"][0]["valor"]
 
-            if l is None or l == "":
+            if aut is None or aut == "":
                     raise IceFlix.TemporaryUnavailable
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Catalog no esta disponible")
+        except IndexError:
+            print("El servicio Catalog no esta disponible")
 
-
-        #convertimos de tipo string a tipo proxy
-        #una vez que es proxy, decirque que es de tipo Catalog
-        pr = self.com.stringToProxy(l)
-        x = IceFlix.MediaCatalogPrx.checkedCast(pr)
+        x = IceFlix.MediaCatalogPrx.checkedCast(aut)
         
         return x
 
@@ -88,34 +78,44 @@ class Prueba(IceFlix.Prueba):
     ########### 
 
 class ServiceAvailability (IceFlix.ServiceAvailability ):
+    def __init__ (self, dic):
+            self.dic = dic
+
     def catalogService(self, message, id,current=None):
-        f = open("proxys/catalogo", "w")
-        l=str(message)
-        f.write(l)
-        f.close()
         print("Catalogo recibido {0}".format(message))
         sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Catalogo"].append(nuevoProxy)
+        print(self.dic)
 
     def authenticationService(self, message,id, current=None):
-        f = open("proxys/listaAut", "w")
-        l=str(message)
-        f.write(l)
-        f.close()
+
         print("autenticador recibido {0}".format(message))
         sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Authenticator"].append(nuevoProxy)
+        print(self.dic)
 
 
     def mediaService(self, message, id,current=None):
-        f = open("proxys/streamProvider", "w")
-        l=str(message)
-        f.write(l)
-        f.close()
+        
         print("Media Stream recibido: {0}".format(message))
         sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["MediaStream"].append(nuevoProxy)
+        print(self.dic)
       
 
 
 class MainServer(Ice.Application):
+    
+
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
         proxy = self.communicator().propertyToProxy(key)
@@ -126,16 +126,20 @@ class MainServer(Ice.Application):
         print("Using IceStorm in: '%s'" % key)
         return IceStorm.TopicManagerPrx.checkedCast(proxy)
 
+    
+
     def run(self, argv):
         topic_mgr = self.get_topic_manager()
         if not topic_mgr:
             print("Invalid proxy")
             return 2
 
+        diccionario= {"Service_availability": [],"Authenticator":[],
+        "MediaStream":[],"Catalogo":[],"StreamerSync":[]} 
         broker = self.communicator()
-        servant = ServiceAvailability ()
+        servant = ServiceAvailability (diccionario)
         servantPrueba = Prueba()
-        servantMain=Main(broker)
+        servantMain=Main(broker,diccionario)
         adapter = broker.createObjectAdapter("MainAdapter")
         MServer = adapter.addWithUUID(servant)
         MServerPrueba = adapter.addWithUUID(servantPrueba)
@@ -150,12 +154,30 @@ class MainServer(Ice.Application):
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
+
     #######
+
+        
+        # Read the JSON into the buffer
+        #jsonFile.close() # Close the JSON file
+       
+        nuevoToken = {}
+        nuevoToken['id'] = "1"
+        nuevoToken['valor'] = str(MServer)
+
+        
+
+        #diccionario["Service_availability"].append(nuevoToken) 
+        #diccionario["mainServer"].append(nuevoToken) 
+         
+
+
         # Escritura de proxys en sus archivos
         topic.subscribeAndGetPublisher(qos, MServer)
         f = open("proxys/serviceAvailability", "w")
         f.write(str(MServer))       
         f.close()
+        diccionario["Service_availability"].append(nuevoToken)
 
         topic.subscribeAndGetPublisher(qos, MServerPrueba)
         f = open("proxys/prueba", "w")
@@ -167,8 +189,9 @@ class MainServer(Ice.Application):
         f.write(str(MServerMain))       
         f.close()
 
-        print("Main server en marcha!")
-       
+        print("Main server en marchaa!")
+
+
         #f = open("listaAut", "r")
         #l=f.read()
         #print(l)
