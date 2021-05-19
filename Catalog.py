@@ -9,11 +9,7 @@ import IceFlix
 import json
 from IceFlix import Media
 
-#class Media (object):
-    # def __init__(self, id, provider, info):
-    #     self.id = id
-    #     self.provider = provider
-    #     self.info = info
+
 
 
 class MediaCatalog (IceFlix.MediaCatalog):
@@ -29,13 +25,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
         #recorrer el json
         found=False
         encontrado = IceFlix.Media()
-
-        # servant_newMedia=StreamAnnounces()
-        # adapter = self.com.createObjectAdapter("StreamProviderAdapter")
-        # catalogServer = adapter.addWithUUID(servant_newMedia)
-
-        # catalogprx = IceFlix.MediaCatalogPrx.uncheckedCast(catalogServer)
-
         try:
             for media in data["peliculas"]:
                 if(media["id"] == id):
@@ -48,8 +37,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     print("VEMOS provider")
                     print(provider)
                     encontrado = IceFlix.Media(media["id"], provider, IceFlix.MediaInfo(media["info"]["name"],listaTags))
-                    #probando Media
-                    #encontrado = Media(media["id"],media["provider"],media["info"])
                     print("Lo encontre! ")
                     print(encontrado)
                     found=True            
@@ -74,12 +61,10 @@ class MediaCatalog (IceFlix.MediaCatalog):
                 if(exact):
                     if(media["info"]["name"].lower() == name.lower()):
                         encontrado = media["id"]
-                        #print (encontrado)
                         lista.append(encontrado)
                 else:
                     if(name.lower() in media["info"]["name"].lower()):
                         encontrado = media["id"]
-                        #print (encontrado)
                         lista.append(encontrado)           
             print(lista)
         
@@ -96,7 +81,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     for tag in tags:                      
                         if(tag) in media["info"]["tags"]:
                             encontrado = media["id"]
-                            #print (encontrado)
                             listaADevolver.append(encontrado)
             else:
                 for media in data["peliculas"]:
@@ -122,7 +106,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     found=True
                     print("CAmbiado el nombre de: ")
                     print(encontrado["info"]["name"])
-                    ## Working with buffered content
                     encontrado["info"]["name"] = name                 
                     ## Save our changes to JSON file
                     jsonFile = open("catalogo.json", "w+")
@@ -135,7 +118,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
 
 
     def addTags(self, id, tags, authentication, current=None):
-
         #ToDo comprobar Authentication
                         
         jsonFile = open("catalogo.json", "r") 
@@ -212,7 +194,6 @@ class StreamAnnounces(IceFlix.StreamAnnounces):
                 encontrado = media
                 print("Cambiado el Provider de: ")
                 print(encontrado["info"]["name"])
-                ## Working with buffered content
                 encontrado["provider"]= providerId                 
                 ## Save our changes to JSON file
                 jsonFile = open("catalogo.json", "w+")
@@ -235,9 +216,6 @@ class StreamAnnounces(IceFlix.StreamAnnounces):
             jsonFile.seek(0)
             json.dump(data, jsonFile, ensure_ascii=False, indent = 4)
             jsonFile.close() # Close the JSON file
-
-            
-
 
        
 class Catalogo(Ice.Application):

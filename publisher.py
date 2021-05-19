@@ -34,11 +34,6 @@ class Publisher(Ice.Application):
 
         publisher = topic.getPublisher()
 
-        ## probando nuevo topic ##
-        # topic_manager = self.get_topic_manager()
-        # if not topic_manager:
-        #     print('Invalid proxy')
-        #     return 2
 
         topic_tokens = "AuthenticationStatus"
         try:
@@ -105,7 +100,6 @@ class Publisher(Ice.Application):
         ######################
         #### lLAMADAS A CATALOG ####
 
-
     ############ Comprobacion estandar:
         print(obtenCat.getTile("Id10"))
         print(obtenCat.getTilesByName("name2", False))        #Probar el True
@@ -134,92 +128,6 @@ class Publisher(Ice.Application):
         #streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)
     ############ Comprobacion estandar:
         #streamProvider.reannounceMedia()
-
-
-
-
-
-
-                    #########################
-                    ## LLAMADAS Y TESTEOS  ##
-                    #########################
-
-    ######################
-    #####################
-        ## Llamadas a ServiceAvailability
-
-        #available = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        #available.catalogService("Hola catalogo")
-        #available.authenticationService("Hola autenticator ")
-        #available.mediaService("Hola media")
-
-
-    ######################
-    ######################
-        ## Llamadas a Main 
-
-        #mai= IceFlix.MainPrx.uncheckedCast(publisher)
-        #obtenAut = mai.getAuthenticator()
-        #print(obtenAut)
-        #mai.getCatalogService()
-
-
-    ######################
-    #######################
-        ## Llamadas a Prueba
-         
-        #prueba = IceFlix.PruebaPrx.checkedCast(publisher)
-        #try:
-        #v = prueba.getPrueba()
-        #except Ice.UnmarshalOutOfBoundsException:
-            #print ("tratando error de unmarshal")
-        #prueba.pruebaVacio()
-     
-
-    ######################   
-    ######################
-        ## Llamadas a Catalog Media       
- 
-        #med = IceFlix.MediaCatalogPrx.uncheckedCast(publisher)
-        #dameCatalogo = med.getTile("idd")
-        #print (dameCatalogo)
-
-        #med.getTilesByName("name2", False)
-            
-
-        #damePorTags = med.getTilesByTags(["tag0" , "tag4"], True)    
-        #print (damePorTags)
-
-        #med.renameTile("Id2022", "nuevoNombre100", "aut")
-
-        #anadeTags = med.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
-
-        #borraTags = med.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
-
-        
-
-        #### LLAMADAS A TOKEN (REVOKE) ####
-        #tok = IceFlix.TokenRevocationPrx.uncheckedCast(publicador)
-        #tok.revoke("ElToken1")
-
-
-    ######################
-    ######################
-        ## Llamadas a Catalog Media  
-
-        # topic_name_newMedia = "MediaAnnouncements"
-
-        # try:
-        #     topic_newMedia = topic_mgr.retrieve(topic_name_newMedia)
-        # except IceStorm.NoSuchTopic:
-        #     print("no such topic found, creating")
-        #     topic_newMedia = topic_mgr.create(topic_name_newMedia)
-
-        # publisher_newMedia = topic_newMedia.getPublisher()
-        # nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
-
-        #nuevoMEdia.newMedia( "id", "initialName", "providerId" )
-        #print("\n He hecho un newMedia espectacular!")
 
 
           

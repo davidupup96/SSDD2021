@@ -11,8 +11,7 @@ import threading
 
 
 class Authenticator(IceFlix.Authenticator):
-    # def prueba(self, current=None):
-    #     print("hola")
+
 
     def refreshAuthorization(self, user, passwordHash, current=None):
         #ToDo desde aqui se llama a TokenRevocation una vez pasados 30 segundos
@@ -44,7 +43,6 @@ class Authenticator(IceFlix.Authenticator):
         ## a continuacion vamos a escribir en tokens.json el id de este usuario
         jsonFile = open("tokens.json", "r+") # Open the JSON file for reading
         data = json.load(jsonFile) # Read the JSON into the buffer
-        #jsonFile.close() # Close the JSON file
 
         nuevoToken = {}
         nuevoToken['id'] = "Dani"
@@ -60,13 +58,7 @@ class Authenticator(IceFlix.Authenticator):
         jsonFile.seek(0)
         # convert back to json.
         json.dump(data, jsonFile, ensure_ascii=False, indent = 4)
-        jsonFile.close() # Close the JSON file
-                
-        ## Save our changes to JSON file
-        #jsonFile = open("tokens.json", "w+")
-        #jsonFile.write(json.dumps(data, indent = 4))
-        #jsonFile.close()
-        
+        jsonFile.close() # Close the JSON file       
 
         return "OK!"
 
@@ -74,13 +66,11 @@ class Authenticator(IceFlix.Authenticator):
         
     def isAuthorized(self, authentication, current=None):
 
-        with open('tokens.json') as f:
-            
+        with open('tokens.json') as f:           
             data = json.load(f)
 
         #recorrer el json
-        found=False
-        
+        found=False        
         for tok in data["tokens"]:
             if(tok["valor"] == authentication):
                 encontrado = tok
@@ -88,8 +78,7 @@ class Authenticator(IceFlix.Authenticator):
                 print(encontrado)
                 found=True               
         if not found:
-            print ("token NO encontrado!")
-        
+            print ("token NO encontrado!")       
 
         return found
 
@@ -119,19 +108,6 @@ class Token(IceFlix.TokenRevocation):
         except IceFlix.WrongMediaId: 
             print("El json no existe")
         
-        
-
-######### Clase prueba para los testeos de Unmarshal ######
-
-# class Prueba(IceFlix.Prueba):
-    
-
-#     def getPrueba(self, msg, current=None):
-#         print("AUTH")
-#         print("Event received: {0}".format(msg))
-#         sys.stdout.flush()
-
-##############
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):

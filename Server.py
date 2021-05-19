@@ -6,9 +6,7 @@ import Ice
 import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 
-
 import time
-
 import IceFlix
 
 class Main(IceFlix.Main):
@@ -19,7 +17,6 @@ class Main(IceFlix.Main):
 
     def getAuthenticator(self, current=None):
                                       
-        #l=str("792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000")
         aut=None
         try:
             aut=self.dic["Authenticator"][0]["valor"]
@@ -52,30 +49,6 @@ class Main(IceFlix.Main):
         return x
 
 
-    ########### Clase  Prueba  ##############
-
-# class Prueba(IceFlix.Prueba):
- 
-#     def getPrueba(self, current=None):
-#         print("PRUEBA\n")
-#         print("Event received: ".format())
-#         sys.stdout.flush()
-
-#         f = open("listaAut", "r")
-#         l=f.readline()
-#         print("Soy prueba y voy a devolver: "+l+"\n")
-#         f.close()
-
-#         return l
-    
-
-#     def pruebaVacio(self,current=None):
-#         print("PRUEBA VACIO\n")
-#         f = open("listaAut", "r")
-#         l=f.readline()
-#         print("\nESTE ES EL AUTENTICADOR: "+l+"\n")
-#         f.close
-#     ########### 
 
 class ServiceAvailability (IceFlix.ServiceAvailability ):
     def __init__ (self, dic):
@@ -136,19 +109,16 @@ class MainServer(Ice.Application):
 
         diccionario= {"Service_availability": [],"Authenticator":[],
         "MediaStream":[],"Catalogo":[],"StreamerSync":[]} 
+
         broker = self.communicator()
         servant = ServiceAvailability (diccionario)
-        # servantPrueba = Prueba()
         servantMain=Main(broker,diccionario)
         adapter = broker.createObjectAdapter("MainAdapter")
         MServer = adapter.addWithUUID(servant)
-        # MServerPrueba = adapter.addWithUUID(servantPrueba)
         MServerMain = adapter.addWithUUID(servantMain)
-
 
         topic_name = "ServiceAvailability" 
         qos = {}
-        listaAut={"792F8331-6F9F-459F-8A4D-B562CC8B26D8 -t -e 1.1:tcp -h 10.0.2.13 -p 37845 -t 60000"}
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
@@ -179,10 +149,6 @@ class MainServer(Ice.Application):
         f.close()
         diccionario["Service_availability"].append(nuevoToken)
 
-        # topic.subscribeAndGetPublisher(qos, MServerPrueba)
-        # f = open("proxys/prueba", "w")
-        # f.write(str(MServerPrueba))       
-        # f.close()
 
         topic.subscribeAndGetPublisher(qos, MServerMain)
         f = open("proxys/main", "w")
@@ -190,20 +156,13 @@ class MainServer(Ice.Application):
         f.close()
 
         print("Main server en marchaa!")
-
-
-        #f = open("listaAut", "r")
-        #l=f.read()
-        #print(l)
-
-       
+      
 
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
         topic.unsubscribe(MServer)
-        # topic.unsubscribe(MServerPrueba)
         topic.unsubscribe(MServerMain)
 
         return 0

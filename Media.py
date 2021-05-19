@@ -27,7 +27,7 @@ class StreamProvider(IceFlix.StreamProvider):
         
         
     def isAvailable(self, id, current=None):
-        print("IsAvailable: {0}".format(message))
+        print("IsAvailable: {0}".format(id))
         sys.stdout.flush()
 
     def reannounceMedia(self, current=None):
@@ -109,7 +109,7 @@ class MediaStream(Ice.Application):
             topic = topic_mgr.create(topic_name)
 
         topic.subscribeAndGetPublisher(qos, mediaServer)
-        print("Autenticando credenciales...'{}'".format(mediaServer))
+        print("Creando Media Stream...'{}'".format(mediaServer))
 
         adapter.activate()
 
@@ -148,15 +148,14 @@ class MediaStream(Ice.Application):
             # Ahora calculamos el SHA256 de cada fichero leido
             id=hashlib.sha224(entry.encode()).hexdigest()
             print(id)
-            # Ahora tendriamos que llamr a la factoria StreamProvider
-            #para crear un StreamController para este media
-            
-            #Por ultimo se harian las llamadas a newMedia para meterlas
-            #en el catalogo    
 
+            
+               
+            # Ahora creamos StreamProvider para añadirlo a newMedia()
             providerPrueba = streamprx.getStream(id, "token")
             print(providerPrueba)
-
+            #Por ultimo se harian las llamadas a newMedia para meterlas
+            #en el catalogo 
             nuevoMEdia.newMedia( id, "initialName", str(streamprx) )
         print("\n Ya añadi los media al catalogo.")
 
