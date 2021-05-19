@@ -7,6 +7,7 @@ import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 import json
+import uuid
 from IceFlix import Media
 
 
@@ -46,6 +47,7 @@ class MediaCatalog (IceFlix.MediaCatalog):
     
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
+            return None
 
         print(encontrado)
         print(type(encontrado))
@@ -73,21 +75,35 @@ class MediaCatalog (IceFlix.MediaCatalog):
 
     def getTilesByTags(self, tags, includeAllTags, current=None):
         with open('catalogo.json') as f:
+
+            encontrado = None
+
             data = json.load(f)
 
             listaADevolver = list()
             if(includeAllTags == False):
                 for media in data["peliculas"]:
+
+                    coincide = False
+
                     for tag in tags:                      
-                        if(tag) in media["info"]["tags"]:
+                        if tag in media["info"]["tags"]:
                             encontrado = media["id"]
-                            listaADevolver.append(encontrado)
+                            if(len(listaADevolver) is not 0):
+                                for evento in listaADevolver:
+                                    if evento == encontrado:
+                                        coincide = True
+                    
+                    if(coincide == False or len(listaADevolver) is 0):
+                        listaADevolver.append(encontrado)
             else:
                 for media in data["peliculas"]:
                     if(sorted(tags) == sorted(media["info"]["tags"])):
                         encontrado = media["id"]
                         listaADevolver.append(encontrado)                   
             print(listaADevolver)
+
+            listaADevolver.pop(0)
 
         return listaADevolver
 
@@ -268,7 +284,7 @@ class Catalogo(Ice.Application):
         publisher = topic.getPublisher()
 
         catalogo = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        catalogo.catalogService(catalogprx,"idPrueba")
+        catalogo.catalogService(catalogprx,str(uuid.uuid4()))
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()

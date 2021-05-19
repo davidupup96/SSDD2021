@@ -63,12 +63,12 @@ class Publisher(Ice.Application):
  
         if obtenAut is not None:
             obtenAut.refreshAuthorization("Cristian","p1") 
-            print("He leido un proxy cojonudo de un Diccionario aun mejor qu el archivo: \n")
+            print("He leido un PROXY AUTHENTICATOR: \n")
             print(obtenAut)
         
         obtenCat = mai.getCatalogService()
         if obtenCat is not None:
-            print("He leido un proxy cojonudo de un archivo Diccionario: \n")
+            print("He leido un PROXY CATALOGO: \n")
             print(obtenCat)
 
 
@@ -91,23 +91,23 @@ class Publisher(Ice.Application):
         ######################
         #### LLAMADAS A AUTHENTICATOR ####
     ############ Comprobacion estandar:
-        #prueba = obtenAut.refreshAuthorization("Cristian","p1")
-        #print (prueba)
-        #isAut = obtenAut.isAuthorized("ElT1")
+        prueba = obtenAut.refreshAuthorization("Dani","p2")
+        print (prueba)
+        #isAut = obtenAut.isAuthorized("ttttttt")
         #print (isAut)
 
 
-        ######################
+        ######################Id20
         #### lLAMADAS A CATALOG ####
 
     ############ Comprobacion estandar:
-        print(obtenCat.getTile("Id10"))
-        print(obtenCat.getTilesByName("name2", False))        #Probar el True
-        listaCat = obtenCat.getTilesByTags(["tag4"], False)
+        #print(obtenCat.getTile("6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3c"))
+        #print(obtenCat.getTilesByName("NombreEjemplo", True))        #Probar el True
+        listaCat = obtenCat.getTilesByTags(["tag50","tag60"], False)
         print(listaCat)    #El True creo que no va
-        #obtenCat.renameTile("Id20", "nuevoNombre100", "aut")
-        #obtenCat.addTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
-        #obtenCat.removeTags("Id20", ["nuevaTag1","nuevaTag2"], "aut")
+        #obtenCat.renameTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", "nuevoNomb", "gshsds")
+        #obtenCat.addTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["DaniTag1","DaniTag2"], "gshsds")
+        #obtenCat.removeTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["tag4","tag6"], "aut")
 
     ############ Comprobacion de errores:
         #obtenCat.getTile("Id10dd")
@@ -125,7 +125,7 @@ class Publisher(Ice.Application):
         #l=f.readline()       
         #f.close()
         #pStreamProvider = self.communicator().stringToProxy(l)
-        #streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)
+        #streamProvider= IceFlix.StreamProviderPrx.checkedCast(pStreamProvider)Id20
     ############ Comprobacion estandar:
         #streamProvider.reannounceMedia()
 

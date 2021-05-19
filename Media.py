@@ -9,6 +9,7 @@ import IceFlix
 
 import os
 import hashlib
+import uuid
 
 
 class StreamProvider(IceFlix.StreamProvider):
@@ -121,7 +122,7 @@ class MediaStream(Ice.Application):
         print(streamprx)
         media = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
 
-        media.mediaService(streamprx,"idPrueba")
+        media.mediaService(streamprx,str(uuid.uuid4()))
 
 
         ############################################################

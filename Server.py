@@ -21,15 +21,17 @@ class Main(IceFlix.Main):
         try:
             aut=self.dic["Authenticator"][0]["valor"]
             if aut is None or aut == "":
-                    raise IceFlix.TemporaryUnavailable
+                raise IceFlix.TemporaryUnavailable
+        
+
+            x = IceFlix.AuthenticatorPrx.checkedCast(aut)
+            
+            return x
+
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Authenticator no esta disponible")
         except IndexError:
             print("El servicio Authenticator no esta disponible")
-
-        x = IceFlix.AuthenticatorPrx.checkedCast(aut)
-        
-        return x
 
          
     def getCatalogService(self, current=None):

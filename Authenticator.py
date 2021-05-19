@@ -7,106 +7,101 @@ import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 import json
+import uuid
 import threading
 
 
 class Authenticator(IceFlix.Authenticator):
+    def __init__ (self, diccionario):
+       
+        self.dic = diccionario
+        
 
 
     def refreshAuthorization(self, user, passwordHash, current=None):
         #ToDo desde aqui se llama a TokenRevocation una vez pasados 30 segundos
+        # topic_mgr = Autenticador.get_topic_manager()
+        # topic_tokens = "AuthenticationStatus"
+        # try:
+        #     topic2 = topic_mgr.retrieve(topic_tokens)
+        # except IceStorm.NoSuchTopic:
+        #     print("no such topic found, creating")
+        #     topic2 = topic_mgr.create(topic_tokens)
+
+        # publicador = topic2.getPublisher()
+
+
         with open('credenciales.json') as f:
             
             data = json.load(f)
 
         #recorrer el json
         found=False
+        nuevoToken = {}
+        
         try:
             for persona in data["usuarios"]:
                 if(persona["nombre"] == user and persona["pass"] == passwordHash ):
                     encontrado = persona
                     print("Lo encontre! ")
                     print(encontrado)
-                    found=True             
+                    found=True       
+
+                    #nuevoToken['id'] = "1"
+                    nuevoToken['valor'] = str(uuid.uuid4())   
+
+                    self.dic["Tokens"].append(nuevoToken)   
 
                     #hacer el timer
-                    t = threading.Timer(5.0, Token.revoke,(self,))
+                    t = threading.Timer(5.0, Token.revoke,(self,nuevoToken['valor'],))
                     t.start()  
                     #t.cancel para parar cuando el stream
             if not found:
                 raise IceFlix.Unauthorized
+
         except IceFlix.Unauthorized: 
             print("La persona buscada no existe")
+            return None
+    
+        print(self.dic)
 
-        ########################
-        ########################
-        ## a continuacion vamos a escribir en tokens.json el id de este usuario
-        jsonFile = open("tokens.json", "r+") # Open the JSON file for reading
-        data = json.load(jsonFile) # Read the JSON into the buffer
-
-        nuevoToken = {}
-        nuevoToken['id'] = "Dani"
-        nuevoToken['valor'] = "nikhil@geeksforgeeks.org"
-
-        print(nuevoToken)
-
-        data["tokens"].append(nuevoToken) 
-
-        print (data)
-
-        # Sets file's current position at offset.
-        jsonFile.seek(0)
-        # convert back to json.
-        json.dump(data, jsonFile, ensure_ascii=False, indent = 4)
-        jsonFile.close() # Close the JSON file       
-
-        return "OK!"
+        return nuevoToken["valor"]
 
 
         
     def isAuthorized(self, authentication, current=None):
+        found = False
+        
+        for token in self.dic["Tokens"]:
 
-        with open('tokens.json') as f:           
-            data = json.load(f)
-
-        #recorrer el json
-        found=False        
-        for tok in data["tokens"]:
-            if(tok["valor"] == authentication):
-                encontrado = tok
-                print("Lo encontre! ")
-                print(encontrado)
-                found=True               
-        if not found:
-            print ("token NO encontrado!")       
-
+            if authentication == token["valor"]:
+                found = True
+      
+        
         return found
 
 
 class Token(IceFlix.TokenRevocation):
+    def __init__ (self, diccionario):
+       
+        self.dic = diccionario
+
     def revoke(self, authentication, current=None):
         
-        jsonFile = open("tokens.json", "r") # Open the JSON file for reading
-        data = json.load(jsonFile) # Read the JSON into the buffer
-        jsonFile.close() # Close the JSON file
-
         found=False
-        try:
-            for tok in data["tokens"]:
-                if(tok["valor"] == authentication):
-                    encontrado = tok
-                    found=True
-                    print(authentication)
-                    ## Working with buffered content
-                    encontrado["valor"] = ""                 
-                    ## Save our changes to JSON file
-                    jsonFile = open("tokens.json", "w+")
-                    jsonFile.write(json.dumps(data, indent = 4))
-                    jsonFile.close()
-            if not found:
-                raise IceFlix.WrongMediaId
-        except IceFlix.WrongMediaId: 
-            print("El json no existe")
+       
+        for tok in self.dic["Tokens"]:
+            if(tok["valor"] == authentication):
+                encontrado = tok
+                found=True
+                print(authentication)
+                ## Working with buffered content
+                encontrado["valor"] = ""                 
+                
+        if not found:
+            print ("el Token NO EXISTE.")
+        
+        print (self.dic)
         
 
 class Autenticador(Ice.Application):
@@ -126,9 +121,12 @@ class Autenticador(Ice.Application):
             print("Invalid proxy")
             return 2
 
+
+        diccionario= {"Tokens": []} 
+
         broker = self.communicator()
-        servant = Authenticator()
-        servantTokenRev = Token()
+        servant = Authenticator(diccionario)
+        servantTokenRev = Token(diccionario)
         adapter = broker.createObjectAdapter("AuthenticatorAdapter")
         autServer = adapter.addWithUUID(servant)
         tokenRevServer = adapter.addWithUUID(servantTokenRev)
@@ -173,7 +171,7 @@ class Autenticador(Ice.Application):
         autprx = IceFlix.AuthenticatorPrx.checkedCast(autServer)
         publisher = topic.getPublisher()
         aut = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        aut.authenticationService(autprx,"idPrueba")
+        aut.authenticationService(autprx, str(uuid.uuid4()))
 
         topic.unsubscribe(autServer)
 

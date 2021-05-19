@@ -15,6 +15,14 @@
         {
             "nombre": "NuevoDani",
             "pass": "pass123"
+        },
+        {
+            "nombre": "NewUser",
+            "pass": "NewPass"
+        },
+        {
+            "nombre": "Paco",
+            "pass": "PassPaco"
         }
     ]
 }
