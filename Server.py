@@ -30,6 +30,7 @@ class Main(IceFlix.Main):
 
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Authenticator no esta disponible")
+            raise IceFlix.TemporaryUnavailable
         except IndexError:
             print("El servicio Authenticator no esta disponible")
 
@@ -43,6 +44,7 @@ class Main(IceFlix.Main):
                     raise IceFlix.TemporaryUnavailable
         except IceFlix.TemporaryUnavailable: 
             print("El servicio Catalog no esta disponible")
+            raise IceFlix.TemporaryUnavailable
         except IndexError:
             print("El servicio Catalog no esta disponible")
 

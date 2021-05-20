@@ -16,6 +16,16 @@ from IceFlix import Media
 class MediaCatalog (IceFlix.MediaCatalog):
     def __init__ (self, comunicador):
         self.com = comunicador
+        topic_mgr = StreamAnnounces.get_topic_manager()
+        topic_main = "AuthenticationStatus"
+        try:
+        	topic2 = topic_mgr.retrieve(topic_main)
+        except IceStorm.NoSuchTopic:
+            print("no such topic found, creating")
+            topic2 = topic_mgr.create(topic_main)
+
+        publicador = topic2.getPublisher()
+        mai= IceFlix.MainPrx.checkedCast(pAut)
 
     def getTile(self, id, current=None):
         with open('catalogo.json') as f:
@@ -47,7 +57,8 @@ class MediaCatalog (IceFlix.MediaCatalog):
     
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
-            return None
+            raise IceFlix.WrongMediaId
+            #return None
 
         print(encontrado)
         print(type(encontrado))
@@ -116,6 +127,7 @@ class MediaCatalog (IceFlix.MediaCatalog):
 
         found=False
         try:
+        	
             for media in data["peliculas"]:
                 if(media["id"] == id):
                     encontrado = media
@@ -131,6 +143,7 @@ class MediaCatalog (IceFlix.MediaCatalog):
                 raise IceFlix.WrongMediaId
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
+            raise IceFlix.WrongMediaId
 
 
     def addTags(self, id, tags, authentication, current=None):
@@ -157,6 +170,7 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     raise IceFlix.WrongMediaId
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
+            raise IceFlix.WrongMediaId
 
 
     def removeTags(self, id, tags, authentication, current=None):
@@ -183,6 +197,7 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     raise IceFlix.WrongMediaId
         except IceFlix.WrongMediaId: 
             print("El identificador: "+id+ " no existe")
+            raise IceFlix.WrongMediaId
                 
                 ## Save our changes to JSON file
         jsonFile = open("catalogo.json", "w+")

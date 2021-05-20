@@ -103,14 +103,14 @@ class Publisher(Ice.Application):
     ############ Comprobacion estandar:
         #print(obtenCat.getTile("6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3c"))
         #print(obtenCat.getTilesByName("NombreEjemplo", True))        #Probar el True
-        listaCat = obtenCat.getTilesByTags(["tag50","tag60"], False)
-        print(listaCat)    #El True creo que no va
+        #listaCat = obtenCat.getTilesByTags(["tag50","tag60"], False)
+        #print(listaCat)    #El True creo que no va
         #obtenCat.renameTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", "nuevoNomb", "gshsds")
         #obtenCat.addTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["DaniTag1","DaniTag2"], "gshsds")
         #obtenCat.removeTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["tag4","tag6"], "aut")
 
     ############ Comprobacion de errores:
-        #obtenCat.getTile("Id10dd")
+        obtenCat.getTile("Id10dd")
         #obtenCat.getTilesByName("name2dd", False)          
         #obtenCat.getTilesByTags(["tag0" , "tag4"], True)    
         #obtenCat.renameTile("Id2022", "nuevoNombre100", "aut")

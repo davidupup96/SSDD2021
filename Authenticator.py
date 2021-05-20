@@ -61,7 +61,7 @@ class Authenticator(IceFlix.Authenticator):
 
         except IceFlix.Unauthorized: 
             print("La persona buscada no existe")
-            return None
+            raise IceFlix.Unauthorized
     
         print(self.dic)
 
