@@ -6,6 +6,7 @@ import Ice
 import IceStorm
 Ice.loadSlice('./EsiFlix.ice')
 import IceFlix
+import hashlib
 
 class Publisher(Ice.Application):
     def get_topic_manager(self):
@@ -62,7 +63,7 @@ class Publisher(Ice.Application):
         obtenAut = mai.getAuthenticator()   
  
         if obtenAut is not None:
-            obtenAut.refreshAuthorization("Cristian","p1") 
+            #obtenAut.refreshAuthorization("Cristian","p1") 
             print("He leido un PROXY AUTHENTICATOR: \n")
             print(obtenAut)
         
@@ -91,7 +92,7 @@ class Publisher(Ice.Application):
         ######################
         #### LLAMADAS A AUTHENTICATOR ####
     ############ Comprobacion estandar:
-        prueba = obtenAut.refreshAuthorization("Dani","p2")
+        prueba = obtenAut.refreshAuthorization("Dani", hashlib.sha256("p2".encode()).hexdigest())
         print (prueba)
         #isAut = obtenAut.isAuthorized("ttttttt")
         #print (isAut)
@@ -110,9 +111,10 @@ class Publisher(Ice.Application):
         #obtenCat.removeTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["tag4","tag6"], "aut")
 
     ############ Comprobacion de errores:
-        obtenCat.getTile("Id10dd")
+        #obtenCat.getTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f")
         #obtenCat.getTilesByName("name2dd", False)          
-        #obtenCat.getTilesByTags(["tag0" , "tag4"], True)    
+        aux = obtenCat.getTilesByTags(["tag4"], False)    
+        obtenCat.getTile(aux[0])
         #obtenCat.renameTile("Id2022", "nuevoNombre100", "aut")
         #obtenCat.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
         #obtenCat.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")

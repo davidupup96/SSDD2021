@@ -2,7 +2,7 @@
     "peliculas": [
         {
             "id": "6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d",
-            "provider": "36AC3B16-0018-4B0A-AD5A-223D7F4D9E5E -t -e 1.1:tcp -h 192.168.1.83 -p 37847 -t 60000:tcp -h 192.168.1.13 -p 37847 -t 60000",
+            "provider": "3050669E-4672-4E6E-BD4A-73F90BEB19F6 -t -e 1.1:tcp -h 192.168.1.83 -p 37065 -t 60000:tcp -h 192.168.1.13 -p 37065 -t 60000",
             "info": {
                 "name": "NombreEjemplo",
                 "tags": [
@@ -12,8 +12,8 @@
             }
         },
         {
-            "id": "2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f",
-            "provider": "36AC3B16-0018-4B0A-AD5A-223D7F4D9E5E -t -e 1.1:tcp -h 192.168.1.83 -p 37847 -t 60000:tcp -h 192.168.1.13 -p 37847 -t 60000",
+            "id": "",
+            "provider": "490542FF-3771-4848-86C8-19B75A5A1689 -t -e 1.1:tcp -h 192.168.1.83 -p 32799 -t 60000:tcp -h 192.168.1.13 -p 32799 -t 60000",
             "info": {
                 "name": "nuevoNomb",
                 "tags": [
@@ -24,9 +24,10 @@
                 ]
             }
         },
+        
         {
-            "id": "63312534ae13759d1183cdab38c2db7589ab769fa7d7f46d2f8c2bb7",
-            "provider": "36AC3B16-0018-4B0A-AD5A-223D7F4D9E5E -t -e 1.1:tcp -h 192.168.1.83 -p 37847 -t 60000:tcp -h 192.168.1.13 -p 37847 -t 60000",
+            "id": "63312534ae13759d1183cdab38c2db7589ab769fa7d7f46d2f8c2bb8",
+            "provider": "490542FF-3771-4848-86C8-19B75A5A1689 -t -e 1.1:tcp -h 192.168.1.83 -p 32799 -t 60000:tcp -h 192.168.1.13 -p 32799 -t 60000",
             "info": {
                 "name": "Tobias",
                 "tags": [
@@ -35,6 +36,14 @@
                     "tag6",
                     "nuevoTobias2"
                 ]
+            }
+        },
+        {
+            "id": "2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f",
+            "provider": "3050669E-4672-4E6E-BD4A-73F90BEB19F6 -t -e 1.1:tcp -h 192.168.1.83 -p 37065 -t 60000:tcp -h 192.168.1.13 -p 37065 -t 60000",
+            "info": {
+                "name": "initialName",
+                "tags": []
             }
         }
     ]

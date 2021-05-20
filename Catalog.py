@@ -16,16 +16,16 @@ from IceFlix import Media
 class MediaCatalog (IceFlix.MediaCatalog):
     def __init__ (self, comunicador):
         self.com = comunicador
-        topic_mgr = StreamAnnounces.get_topic_manager()
-        topic_main = "AuthenticationStatus"
-        try:
-        	topic2 = topic_mgr.retrieve(topic_main)
-        except IceStorm.NoSuchTopic:
-            print("no such topic found, creating")
-            topic2 = topic_mgr.create(topic_main)
+        # topic_mgr = StreamAnnounces.get_topic_manager()
+        # topic_main = "AuthenticationStatus"
+        # try:
+        # 	topic2 = topic_mgr.retrieve(topic_main)
+        # except IceStorm.NoSuchTopic:
+        #     print("no such topic found, creating")
+        #     topic2 = topic_mgr.create(topic_main)
 
-        publicador = topic2.getPublisher()
-        mai= IceFlix.MainPrx.checkedCast(pAut)
+        # publicador = topic2.getPublisher()
+        # mai= IceFlix.MainPrx.checkedCast(pAut)
 
     def getTile(self, id, current=None):
         with open('catalogo.json') as f:
@@ -50,7 +50,10 @@ class MediaCatalog (IceFlix.MediaCatalog):
                     encontrado = IceFlix.Media(media["id"], provider, IceFlix.MediaInfo(media["info"]["name"],listaTags))
                     print("Lo encontre! ")
                     print(encontrado)
-                    found=True            
+                    found=True          
+
+                    if(media["provider"] is ""):
+                         raise IceFlix.TemporaryUnavailable
                        
             if not found:
                 raise IceFlix.WrongMediaId
@@ -59,6 +62,10 @@ class MediaCatalog (IceFlix.MediaCatalog):
             print("El identificador: "+id+ " no existe")
             raise IceFlix.WrongMediaId
             #return None
+
+        except IceFlix.TemporaryUnavailable:
+            print("El Media no está disponible.")
+            raise IceFlix.TemporaryUnavailable
 
         print(encontrado)
         print(type(encontrado))
@@ -92,29 +99,26 @@ class MediaCatalog (IceFlix.MediaCatalog):
             data = json.load(f)
 
             listaADevolver = list()
+            listaAux = list()
             if(includeAllTags == False):
                 for media in data["peliculas"]:
 
-                    coincide = False
+                    #coincide = False
 
                     for tag in tags:                      
                         if tag in media["info"]["tags"]:
                             encontrado = media["id"]
-                            if(len(listaADevolver) is not 0):
-                                for evento in listaADevolver:
-                                    if evento == encontrado:
-                                        coincide = True
-                    
-                    if(coincide == False or len(listaADevolver) is 0):
-                        listaADevolver.append(encontrado)
+
+                            if encontrado not in listaAux:
+                                listaAux.append(encontrado)
+                                listaADevolver.append(encontrado)
+
             else:
                 for media in data["peliculas"]:
                     if(sorted(tags) == sorted(media["info"]["tags"])):
                         encontrado = media["id"]
                         listaADevolver.append(encontrado)                   
             print(listaADevolver)
-
-            listaADevolver.pop(0)
 
         return listaADevolver
 

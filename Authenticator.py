@@ -9,6 +9,7 @@ import IceFlix
 import json
 import uuid
 import threading
+import hashlib
 
 
 class Authenticator(IceFlix.Authenticator):
@@ -39,9 +40,17 @@ class Authenticator(IceFlix.Authenticator):
         found=False
         nuevoToken = {}
         
+        print("USER QUE LE PASO:")
+        print(user)
+        print("PASSWORD QUE LE PASO:")
+        print(passwordHash)
+        
+        
         try:
             for persona in data["usuarios"]:
-                if(persona["nombre"] == user and persona["pass"] == passwordHash ):
+                print("NUESTRO HASHLIB:")
+                print(hashlib.sha256(persona["pass"].encode()).hexdigest())
+                if(persona["nombre"] == user and hashlib.sha256(persona["pass"].encode()).hexdigest() == passwordHash ):
                     encontrado = persona
                     print("Lo encontre! ")
                     print(encontrado)
@@ -65,6 +74,7 @@ class Authenticator(IceFlix.Authenticator):
     
         print(self.dic)
 
+        
         return nuevoToken["valor"]
 
 

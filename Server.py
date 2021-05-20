@@ -33,6 +33,7 @@ class Main(IceFlix.Main):
             raise IceFlix.TemporaryUnavailable
         except IndexError:
             print("El servicio Authenticator no esta disponible")
+            raise IceFlix.TemporaryUnavailable
 
          
     def getCatalogService(self, current=None):
@@ -47,6 +48,7 @@ class Main(IceFlix.Main):
             raise IceFlix.TemporaryUnavailable
         except IndexError:
             print("El servicio Catalog no esta disponible")
+            raise IceFlix.TemporaryUnavailable
 
         x = IceFlix.MediaCatalogPrx.checkedCast(aut)
         
