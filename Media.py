@@ -13,9 +13,8 @@ import uuid
 
 
 class StreamProvider(IceFlix.StreamProvider):
-    def __init__ (self, comunicador, diccionarioAvailability):
+    def __init__ (self, comunicador):
         self.com = comunicador
-        self.dic = diccionarioAvailability
 
     def getStream(self, id, authentication, current):
         servant = StreamController()
@@ -50,6 +49,8 @@ class StreamProvider(IceFlix.StreamProvider):
         publisher_newMedia = topic_newMedia.getPublisher()
 
         nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
+
+    #############################################
         print("reanounce")
 
         basepath = 'media/'
@@ -78,40 +79,7 @@ class StreamController(IceFlix.StreamController):
 
 
 
-class ServiceAvailability (IceFlix.ServiceAvailability ):
-    def __init__ (self, dic):
-            self.dic = dic
 
-    def catalogService(self, message, id,current=None):
-        print("Catalogo recibido {0}".format(message))
-        
-        sys.stdout.flush()
-        nuevoProxy = {}
-        nuevoProxy['id'] = id
-        nuevoProxy['valor'] = message
-        self.dic["Catalogo"].append(nuevoProxy)
-        print(self.dic)
-
-    def authenticationService(self, message,id, current=None):
-
-        print("autenticador recibido {0}".format(message))
-        sys.stdout.flush()
-        nuevoProxy = {}
-        nuevoProxy['id'] = id
-        nuevoProxy['valor'] = message
-        self.dic["Authenticator"].append(nuevoProxy)
-        print(self.dic)
-
-
-    def mediaService(self, message, id,current=None):
-        
-        print("Media Stream recibido: {0}".format(message))
-        sys.stdout.flush()
-        nuevoProxy = {}
-        nuevoProxy['id'] = id
-        nuevoProxy['valor'] = message
-        self.dic["MediaStream"].append(nuevoProxy)
-        print(self.dic)
 class MediaStream(Ice.Application):
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
@@ -128,14 +96,11 @@ class MediaStream(Ice.Application):
         if not topic_mgr:
             print("Invalid proxy")
             return 2
-        diccionarioAvailability = {"Service_availability": [],"Authenticator":[],
-        "MediaStream":[],"Catalogo":[],"StreamerSync":[]}
+
         broker = self.communicator()
-        servant = StreamProvider(broker, diccionarioAvailability)
-        servantAvailability = ServiceAvailability(diccionarioAvailability)
+        servant = StreamProvider(broker)
         adapter = broker.createObjectAdapter("StreamProviderAdapter")
         mediaServer = adapter.addWithUUID(servant)
-        serviceAvailability = adapter.addWithUUID(servantAvailability)
 
         topic_name = "ServiceAvailability" 
         qos = {}
@@ -144,7 +109,6 @@ class MediaStream(Ice.Application):
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
-        topic.subscribeAndGetPublisher(qos, serviceAvailability)
         topic.subscribeAndGetPublisher(qos, mediaServer)
         print("Creando Media Stream...'{}'".format(mediaServer))
 
@@ -157,8 +121,8 @@ class MediaStream(Ice.Application):
         print("Soy STREAM PROVIDER :  \n")
         print(streamprx)
         media = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-        streamid = str(uuid.uuid4())
-        media.mediaService(streamprx,streamid)
+
+        media.mediaService(streamprx,str(uuid.uuid4()))
 
 
         ############################################################
@@ -185,7 +149,9 @@ class MediaStream(Ice.Application):
             # Ahora calculamos el SHA256 de cada fichero leido
             id=hashlib.sha224(entry.encode()).hexdigest()
             print(id)
-                    
+
+            
+               
             # Ahora creamos StreamProvider para añadirlo a newMedia()
             providerPrueba = streamprx.getStream(id, "token")
             print(providerPrueba)
@@ -193,6 +159,9 @@ class MediaStream(Ice.Application):
             #en el catalogo 
             nuevoMEdia.newMedia( id, "initialName", str(streamprx) )
         print("\n Ya añadi los media al catalogo.")
+
+
+       
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()

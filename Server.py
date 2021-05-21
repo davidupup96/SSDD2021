@@ -67,7 +67,7 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Catalogo"].append(nuevoProxy)
-       
+        print(self.dic)
 
     def authenticationService(self, message,id, current=None):
 
@@ -77,7 +77,7 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Authenticator"].append(nuevoProxy)
-       
+        print(self.dic)
 
 
     def mediaService(self, message, id,current=None):
@@ -88,7 +88,7 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["MediaStream"].append(nuevoProxy)
-        
+        print(self.dic)
       
 
 
@@ -131,17 +131,31 @@ class MainServer(Ice.Application):
             topic = topic_mgr.create(topic_name)
 
 
+    #######
+
+        
+        # Read the JSON into the buffer
+        #jsonFile.close() # Close the JSON file
        
-        nuevoProxy = {}
-        nuevoProxy['id'] = "1"
-        nuevoProxy['valor'] = str(MServer)
+        nuevoToken = {}
+        nuevoToken['id'] = "1"
+        nuevoToken['valor'] = str(MServer)
+
+        
+
+        #diccionario["Service_availability"].append(nuevoToken) 
+        #diccionario["mainServer"].append(nuevoToken) 
+         
 
 
         # Escritura de proxys en sus archivos
         topic.subscribeAndGetPublisher(qos, MServer)
-        diccionario["Service_availability"].append(nuevoProxy)
+        f = open("proxys/serviceAvailability", "w")
+        f.write(str(MServer))       
+        f.close()
+        diccionario["Service_availability"].append(nuevoToken)
 
-        print(MServerMain)
+
         topic.subscribeAndGetPublisher(qos, MServerMain)
         f = open("proxys/main", "w")
         f.write(str(MServerMain))       
