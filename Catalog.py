@@ -18,21 +18,10 @@ class MediaCatalog (IceFlix.MediaCatalog):
     def __init__(self, comunicador, diccionario):
         self.com = comunicador
         self.dic = diccionario
-        # topic_mgr = StreamAnnounces.get_topic_manager()
-        # topic_main = "AuthenticationStatus"
-        # try:
-        # 	topic2 = topic_mgr.retrieve(topic_main)
-        # except IceStorm.NoSuchTopic:
-        #     print("no such topic found, creating")
-        #     topic2 = topic_mgr.create(topic_main)
 
-        # publicador = topic2.getPublisher()
-        # mai= IceFlix.MainPrx.checkedCast(pAut)
 
     def getTile(self, id, current=None):
         with open('catalogo.json') as f:
-            # ToDo Controlar cuando el archivo esta vacio.
-            # Y TemporaryUnavailable
             data = json.load(f)
 
         # recorrer el json
@@ -42,18 +31,11 @@ class MediaCatalog (IceFlix.MediaCatalog):
             for media in data["peliculas"]:
                 if(media["id"] == id):
                     listaTags = list(media["info"]["tags"])
-                    print(media["provider"])
+                    
                     providerprx = self.com.stringToProxy(media["provider"])
-                    print("GETTILE PROXY\n")
-                    print(providerprx)
-                    print(type(providerprx))
                     provider = IceFlix.StreamProviderPrx.checkedCast(providerprx)
                     print("VEMOS media[provider]\n")
                     print(media["provider"])
-                    print("VEMOS TYPE\n")
-                    print(type(provider))
-                    print("VEMOS provider")
-                    print(provider)
                     encontrado = IceFlix.Media(media["id"], provider, IceFlix.MediaInfo(
                         media["info"]["name"], listaTags))
                     print("Lo encontre! ")
@@ -76,7 +58,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
             raise IceFlix.TemporaryUnavailable
 
         print(encontrado)
-        print(type(encontrado))
         return encontrado
 
     def getTilesByName(self, name, exact, current=None):

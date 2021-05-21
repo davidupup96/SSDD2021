@@ -50,8 +50,6 @@ class StreamProvider(IceFlix.StreamProvider):
         publisher_newMedia = topic_newMedia.getPublisher()
 
         nuevoMEdia = IceFlix.StreamAnnouncesPrx.uncheckedCast(publisher_newMedia)
-
-    #############################################
         print("reanounce")
 
         basepath = 'media/'
@@ -86,7 +84,7 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
 
     def catalogService(self, message, id,current=None):
         print("Catalogo recibido {0}".format(message))
-        print("Estoy en media y es diccionario de catalogo")
+        
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
@@ -97,7 +95,6 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
     def authenticationService(self, message,id, current=None):
 
         print("autenticador recibido {0}".format(message))
-        print("Estoy en media y es diccionario de autenticator")
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
@@ -109,7 +106,6 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
     def mediaService(self, message, id,current=None):
         
         print("Media Stream recibido: {0}".format(message))
-        print("Estoy en media y es diccionario de media")
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
@@ -189,9 +185,7 @@ class MediaStream(Ice.Application):
             # Ahora calculamos el SHA256 de cada fichero leido
             id=hashlib.sha224(entry.encode()).hexdigest()
             print(id)
-
-            
-               
+                    
             # Ahora creamos StreamProvider para añadirlo a newMedia()
             providerPrueba = streamprx.getStream(id, "token")
             print(providerPrueba)
@@ -199,9 +193,6 @@ class MediaStream(Ice.Application):
             #en el catalogo 
             nuevoMEdia.newMedia( id, "initialName", str(streamprx) )
         print("\n Ya añadi los media al catalogo.")
-
-
-       
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()

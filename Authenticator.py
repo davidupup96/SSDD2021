@@ -200,35 +200,17 @@ class Autenticador(Ice.Application):
         print("Revocando tokens...'{}'".format(tokenRevServer))
 
         adapter.activate()
-        #me he llevado 2 lineas de cerrar servicio
-       
 
-        #parte publicadora
-        #topic_mgr = self.get_topic_manager()
-
-        #topic_name2 = "ServiceAvariability2"
-        #try:
-            #topic = topic_mgr.retrieve(topic_name)
-            #topic2 = topic_mgr.retrieve(topic_name2)
-        #except IceStorm.NoSuchTopic:
-            #print("no such topic found, creating")
-            #topic = topic_mgr.create(topic_name)
-            #topic2 = topic_mgr.create(topic_name2)
-
-
-        #nuevo checkedCast
 
         autprx = IceFlix.AuthenticatorPrx.checkedCast(autServer)
         publisher = topic.getPublisher()
         aut = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
         aut.authenticationService(autprx, str(uuid.uuid4()))
 
-        topic.unsubscribe(autServer)
-
-        #las 2 lineas de cerrar servicio
+        
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
-
+        topic.unsubscribe(autServer)
         return 0
 
 

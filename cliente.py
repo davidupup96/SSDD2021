@@ -165,19 +165,22 @@ class Subscriber(Ice.Application):
         ############################################################
 
             elif choice == "login":
-                try:
-                    autenticator=main.getAuthenticator()
-                    user= input("Introduzca el usuario:\n")
-                    print("Introduzca la contraseña\n")
-                    password=hashlib.sha256(getpass().encode()).hexdigest()
+                if(main != None):
+                    try:
+                        autenticator=main.getAuthenticator()
+                        user= input("Introduzca el usuario:\n")
+                        print("Introduzca la contraseña\n")
+                        password=hashlib.sha256(getpass().encode()).hexdigest()
 
-                    token=autenticator.refreshAuthorization(user,password)
+                        token=autenticator.refreshAuthorization(user,password)
 
-                    print("¡Log in realizado correctamente!")
-                except IceFlix.TemporaryUnavailable:
-                    print("No hay ningun autenticator disponible.")
-                except IceFlix.Unauthorized:
-                    print("Credenciales incorrectas")
+                        print("¡Log in realizado correctamente!")
+                    except IceFlix.TemporaryUnavailable:
+                        print("No hay ningun autenticator disponible.")
+                    except IceFlix.Unauthorized:
+                        print("Credenciales incorrectas")
+                else:
+                    print("Primero debe conectarse a MainServer usando la opcion \"conectar\"\n")
 
 
             elif choice == "refresh":

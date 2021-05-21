@@ -3,14 +3,15 @@
 
 import sys
 import json
+import hashlib
 
-
-if(len(sys.argv) == 3):
+if(len(sys.argv) ==3):
     jsonFile = open("credenciales.json", "r+") # Open the JSON file for reading
     data = json.load(jsonFile) # Read the JSON into the buffer
     #jsonFile.close() # Close the JSON file
-
-
+    
+    print(sys.argv[1])
+    print(sys.argv[2])
     found=False
     
     for user in data["usuarios"]:
@@ -22,7 +23,7 @@ if(len(sys.argv) == 3):
     if(found is False) :     
         nuevoUser = {
                 "nombre": sys.argv[1],
-                "pass": sys.argv[2]
+                "pass": hashlib.sha256(sys.argv[2].encode()).hexdigest()
                 
             }
 
@@ -31,10 +32,11 @@ if(len(sys.argv) == 3):
         jsonFile.seek(0)
         json.dump(data, jsonFile, ensure_ascii=False, indent = 4)
         jsonFile.close() # Close the JSON file
-
     
 
 else:
+    print(sys.argv[1])
+    print(sys.argv[2])
     print("Debes introducir un usuario y password.")
 
 

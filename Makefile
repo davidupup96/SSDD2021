@@ -26,9 +26,10 @@ run_iceflix:
 	sleep 1
 	$(MAKE) run_authenticator
 	
-add_user argv[1] argv[2]:
-	"python3 $1 $2"
-
+add_user <user> <pas>:
+	gnome-terminal -- bash -c \
+	"python3 registro.py $1 $2; bash"
+	
 run_authenticator:
 	gnome-terminal -- bash -c \
 	"python3 Authenticator.py --Ice.Config=Authenticator.config; bash"

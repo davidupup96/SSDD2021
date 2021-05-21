@@ -6,8 +6,13 @@ David Utrilla Patón
 URL del repositorio donde todo esta guardado:
 https://github.com/davidupup96/SSDD2021
 
+La funcionalidad de registrar un usuario ("add_user") funciona correctamente
+Pero debido a que no sabemos como pasar los argumentos de bash a python3
+Hemos decidido dejarlo y que se ejecute a mano como un programa normal. 
+Tiene todas las funcionalidades requeridas.
 
-Elimianr a partir de aqui
+Eliminar a partir de aqui
+
 Arranque del servicio IceStorm
 ------------------------------
 
