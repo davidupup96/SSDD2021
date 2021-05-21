@@ -173,13 +173,7 @@ class Subscriber(Ice.Application):
                         print("Introduzca la contraseña\n")
                         password=hashlib.sha256(getpass().encode()).hexdigest()
 
-                        token=autenticator.refreshAuthorization(user,password)
-
-                        #hacer el timer
-                        t = threading.Timer(5.0, autenticator.refreshAuthorization,(self,user,password,))
-                        t.start() 
-                        token = t.join()
-                        print(token)
+                        token=autenticator.refreshAuthorization(user,password)                                            
 
                         print("¡Log in realizado correctamente!")
                     except IceFlix.TemporaryUnavailable:

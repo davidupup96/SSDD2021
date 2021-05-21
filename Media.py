@@ -90,7 +90,6 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Catalogo"].append(nuevoProxy)
-        print(self.dic)
 
     def authenticationService(self, message,id, current=None):
 
@@ -100,7 +99,7 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Authenticator"].append(nuevoProxy)
-        print(self.dic)
+
 
 
     def mediaService(self, message, id,current=None):
@@ -111,7 +110,9 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["MediaStream"].append(nuevoProxy)
-        print(self.dic)
+
+
+
 class MediaStream(Ice.Application):
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
@@ -184,11 +185,9 @@ class MediaStream(Ice.Application):
         for entry in os.listdir(basepath):
             # Ahora calculamos el SHA256 de cada fichero leido
             id=hashlib.sha224(entry.encode()).hexdigest()
-            print(id)
                     
             # Ahora creamos StreamProvider para añadirlo a newMedia()
             providerPrueba = streamprx.getStream(id, "token")
-            print(providerPrueba)
             #Por ultimo se harian las llamadas a newMedia para meterlas
             #en el catalogo 
             nuevoMEdia.newMedia( id, "initialName", str(streamprx) )

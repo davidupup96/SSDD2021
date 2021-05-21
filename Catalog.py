@@ -117,21 +117,18 @@ class MediaCatalog (IceFlix.MediaCatalog):
         posicion = len(self.dic["Authenticator"])
         posicion = posicion - 1
         proxy = self.dic["Authenticator"][posicion]["valor"]
-        print("\nVoy a mostrar el proxy de authenticator\n")
-        print(proxy)
+
 
         print(type(proxy))
         found = False
 
         try:
             if (proxy.isAuthorized(authentication) == True):
-                print("HE ENTRADO EN LA AUTHENTICACION")
                 for media in data["peliculas"]:
                     if(media["id"] == id):
                         encontrado = media
                         found = True
-                        print("CAmbiado el nombre de: ")
-                        print(encontrado["info"]["name"])
+                        print("Cambiado el nombre de: ")
                         encontrado["info"]["name"] = name
                         # Save our changes to JSON file
                         jsonFile = open("catalogo.json", "w+")
@@ -166,7 +163,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
                         found = True
                         encontrado["info"]["tags"].extend(tags)
                         print("Añadidos los tags: ")
-                        print(encontrado["info"]["tags"])
 
                         jsonFile = open("catalogo.json", "w+")
                         jsonFile.write(json.dumps(data, indent=4))
@@ -202,7 +198,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
                         for tagEncontrado in reversed(encontrado["info"]["tags"]):
                             for tagParams in tags:
                                 if(tagParams == tagEncontrado):
-                                    print("Encuentro tag a borrar: " + tagParams)
                                     del(encontrado["info"]["tags"][i])
                             i -= 1
             else:
@@ -220,9 +215,6 @@ class MediaCatalog (IceFlix.MediaCatalog):
         jsonFile.write(json.dumps(data, indent=4))
         jsonFile.close()
 
-        ############################################################
-        ##   EL NEW MEDIA QUE ESTABA DESDE EL PRINCIPIO AQUI      ##
-        ############################################################
 
 
 class StreamAnnounces(IceFlix.StreamAnnounces):
@@ -271,35 +263,32 @@ class ServiceAvailability (IceFlix.ServiceAvailability):
 
     def catalogService(self, message, id, current=None):
         print("Catalogo recibido {0}".format(message))
-        print("Estoy en catalog y es diccionario de catalogo")
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Catalogo"].append(nuevoProxy)
-        print(self.dic)
+
 
     def authenticationService(self, message, id, current=None):
 
         print("autenticador recibido {0}".format(message))
-        print("Estoy en catalog y es diccionario de autenticator")
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Authenticator"].append(nuevoProxy)
-        print(self.dic)
+
 
     def mediaService(self, message, id, current=None):
 
         print("Media Stream recibido: {0}".format(message))
-        print("Estoy en catalog y es diccionario de media")
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["MediaStream"].append(nuevoProxy)
-        print(self.dic)
+
 
 
 class Catalogo(Ice.Application):
@@ -345,7 +334,7 @@ class Catalogo(Ice.Application):
         topic_media.subscribeAndGetPublisher(qos_media, catalogServerMedia)
         topic.subscribeAndGetPublisher(qos, serviceAvailability)
         print("Catalogo suscrito..'{}'".format(catalogServer))
-        print("Catalogo suscrito a MEdiaAnounce..'{}'".format(catalogServerMedia))
+        print("Catalogo suscrito a MediaAnounce..'{}'".format(catalogServerMedia))
 
         adapter.activate()
 

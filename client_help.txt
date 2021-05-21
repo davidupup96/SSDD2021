@@ -1,0 +1,47 @@
+Todos los comandos del cliente son individuales y simples, es decir, 
+para ejecutarlos simplemente hay que escribirlos tal como los indica el comando "help" 
+y a continuacionnos saldran más instrucciones.
+
+Las opciones que implican busqueda, añadir o borrar tags nos permiten 
+poner multiples tags simplemente separandolos por espacios.
+
+Pasos a dar para la ejecucion y comprobacion del cliente:
+
+1- Ejecutamos python3 cliente.py --Ice.Config=cliente.config
+
+2- Una vez abierto escribiendo "help" nos aparecera en pantalla un 
+listado de los posibles comandos
+
+3- Primero escribimos "conectar" y a contninuacion nos pedira introducir 
+el proxy de MainServer (obtenible en la terminal de MainServer)
+
+4- Una vez hecho eso podemos realizar todas las consultas posibles.
+
+5- Usando "buscar" podemos realizar una busqueda por nombre. 
+Despues de introducir el nombre nos preguntara si queremos que sea una busqueda exacta o no. 
+Esto lo indicamos escribiendo "si" o "no"
+
+6- Con "buscar_tag" puedes hacer busquedas por tag. Pidiendonos tambien 
+posteriormente si es una busqueda exacta o no.
+
+7- Despues de realizar una de las dos busquedas anteriores se nos mostrara 
+un listado con los Media encontrados que coincidan.
+
+8- Escribiendo "seleccionar" nos pedira luego poner el numero de Media 
+de la ultima lista mostrada que queremos seleccionar.
+
+9- Para los siguientes comandos necesitamos ejecutar antes el "login". 
+Primero nos pedira el usuario y luego la contraseña.
+
+10- Al estar logueados podemos usar "nuevo_tag" sobre el elemento Media 
+que tengamos seleccionado. Al usarlo, nos indicara 
+que tenemos que escribir la lista de tags que queremos añadir.
+
+11- Con "cambiar_nombre" nos permitira elegir un nuevo nombre para el elemento seleccionado.
+12- Si escribimos "borrar_tag" a continuacion nos pedira una llista de tags a borrar.
+
+13- El comando "refresh" refresca el token de nuevo(30 segundos)
+
+Por ultimo el comando "exit" cerrara el cliente.
+
+No disponemos de reproducción de video ni de refresco automatico de tokens.

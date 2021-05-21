@@ -1,38 +1,5 @@
 {
     "peliculas": [
-        {
-            "id": "6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d",
-            "provider": "FA57DAE6-01F4-45B3-9CBA-DF84AD9F9A73 -t -e 1.1:tcp -h 192.168.1.13 -p 41023 -t 60000",
-            "info": {
-                "name": "nuevoooooo",
-                "tags": [
-                    "tag1"
-                ]
-            }
-        },
-        {
-            "id": "2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f",
-            "provider": "FA57DAE6-01F4-45B3-9CBA-DF84AD9F9A73 -t -e 1.1:tcp -h 192.168.1.13 -p 41023 -t 60000",
-            "info": {
-                "name": "initialName",
-                "tags": [
-                    "tag3",
-                    "tag4",
-                    "miTag",
-                    "miViejoTag"
-                ]
-            }
-        },
-        {
-            "id": "63312534ae13759d1183cdab38c2db7589ab769fa7d7f46d2f8c2bb7",
-            "provider": "FA57DAE6-01F4-45B3-9CBA-DF84AD9F9A73 -t -e 1.1:tcp -h 192.168.1.13 -p 41023 -t 60000",
-            "info": {
-                "name": "initialName",
-                "tags": [
-                    "tag4",
-                    "tag5"
-                ]
-            }
-        }
+        
     ]
 }

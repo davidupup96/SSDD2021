@@ -39,12 +39,7 @@ class Authenticator(IceFlix.Authenticator):
 
         #recorrer el json
         found=False
-        nuevoToken = {}
-        
-        print("USER QUE LE PASO:")
-        print(user)
-        print("PASSWORD QUE LE PASO:")
-        print(passwordHash)
+        nuevoToken = {}        
         
         
         try:
@@ -52,8 +47,6 @@ class Authenticator(IceFlix.Authenticator):
                 
                 if(persona["nombre"] == user and persona["pass"] == passwordHash ):
                     encontrado = persona
-                    print("Lo encontre! ")
-                    print(encontrado)
                     found=True       
 
                     #nuevoToken['id'] = "1"
@@ -72,7 +65,6 @@ class Authenticator(IceFlix.Authenticator):
             print("La persona buscada no existe")
             raise IceFlix.Unauthorized
     
-        print(self.dic)
 
         
         return nuevoToken["valor"]
@@ -119,36 +111,36 @@ class ServiceAvailability (IceFlix.ServiceAvailability ):
 
     def catalogService(self, message, id,current=None):
         print("Catalogo recibido {0}".format(message))
-        print("Estoy en autenticator y es diccionario de catalogo")
+
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Catalogo"].append(nuevoProxy)
-        print(self.dic)
+
 
     def authenticationService(self, message,id, current=None):
 
         print("autenticador recibido {0}".format(message))
-        print("Estoy en autenticator y es diccionario de authenticator")
+
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["Authenticator"].append(nuevoProxy)
-        print(self.dic)
+
 
 
     def mediaService(self, message, id,current=None):
         
         print("Media Stream recibido: {0}".format(message))
-        print("Estoy en autenticator y es diccionario de media")
+
         sys.stdout.flush()
         nuevoProxy = {}
         nuevoProxy['id'] = id
         nuevoProxy['valor'] = message
         self.dic["MediaStream"].append(nuevoProxy)
-        print(self.dic)
+
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):
@@ -197,7 +189,7 @@ class Autenticador(Ice.Application):
         topic.subscribeAndGetPublisher(qos, serviceAvailability)
         topic2.subscribeAndGetPublisher(qos, tokenRevServer)
         print("Autenticando credenciales...'{}'".format(autServer))
-        print("Revocando tokens...'{}'".format(tokenRevServer))
+
 
         adapter.activate()
 

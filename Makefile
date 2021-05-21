@@ -5,7 +5,7 @@
 all: clean \
 	start
 	sleep 1
-	$(MAKE) run-publisher
+
 
 start:
 	$(MAKE) run_icestorm
@@ -17,7 +17,7 @@ run-subscriber:
 	"./subscriber.py --Ice.Config=subscriber.config; bash"
 
 run_iceflix:
-	gnome-terminal -- bash -c \
+	
 	$(MAKE) run_server 
 	sleep 1
 	$(MAKE) run_catalog
@@ -26,6 +26,11 @@ run_iceflix:
 	sleep 1
 	$(MAKE) run_authenticator
 	
+
+run_client:
+	gnome-terminal -- bash -c \
+	"python3 cliente.py --Ice.Config=cliente.config; bash"
+
 add_user <user> <pass>:
 	
 	python registro.py ${PARAMS}

@@ -1,4 +1,4 @@
-Lista de alumnos qeu realizaron esta practica:
+Lista de alumnos que realizaron esta practica:
 Tiberiu Cristian Stavar
 Daniel Gijón Robas
 David Utrilla Patón
@@ -6,33 +6,12 @@ David Utrilla Patón
 URL del repositorio donde todo esta guardado:
 https://github.com/davidupup96/SSDD2021
 
-La funcionalidad de registrar un usuario ("add_user") funciona correctamente
-Pero debido a que no sabemos como pasar los argumentos de bash a python3
-Hemos decidido dejarlo y que se ejecute a mano como un programa normal. 
-Tiene todas las funcionalidades requeridas.
+La funcionalidad de registrar un usuario ("add_user") funciona correctamente 
+escribiendo en consola la siguiente orden:
 
-Eliminar a partir de aqui
+make add_user PARAMS='<userName> <password>'
 
-Arranque del servicio IceStorm
-------------------------------
 
-IceStorm es un servicio que se ejecuta mediante icebox (el serivdor de aplicaciones de
-Ice). Icebox se ejecuta con su propio fichero de configuración. La persistencia de canales
-de icebox requiere un directorio para la base de datos.
-
-$ mkdir db
-$ icebox --Ice.Config=icebox.config &
-
-Después ejecutamos el Main server y a continuacion el resto de servicios :
-
- python3 Server.py --Ice.Config=Server.config
-
- python3 Catalog.py --Ice.Config=Catalog.config
-
- python3 Media.py --Ice.Config=Media.config
-
- python3 Authenticator.py --Ice.Config=Authenticator.config
-
-Por ultimo se ejecuta el publisher para las pruebas pertinentes.
-
- python3 publisher.py --Ice.Config=publisher.config
+Al no estar implemetado el streaming de video, en la carpeta media hemos
+guardado archivos en vez de videos. Esos archivos son simple texto plano para simular
+el funcionamiento esperado.

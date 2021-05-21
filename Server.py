@@ -135,19 +135,17 @@ class MainServer(Ice.Application):
         nuevoProxy = {}
         nuevoProxy['id'] = "1"
         nuevoProxy['valor'] = str(MServer)
-
-
-        # Escritura de proxys en sus archivos
+       
         topic.subscribeAndGetPublisher(qos, MServer)
         diccionario["Service_availability"].append(nuevoProxy)
 
-        print(MServerMain)
+        
         topic.subscribeAndGetPublisher(qos, MServerMain)
-        f = open("proxys/main", "w")
-        f.write(str(MServerMain))       
-        f.close()
 
-        print("Main server en marchaa!")
+
+        print("\nMain server en marchaa!")
+        print(MServerMain)
+        print("\n")
       
 
         adapter.activate()
