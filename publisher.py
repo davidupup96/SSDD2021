@@ -108,7 +108,7 @@ class Publisher(Ice.Application):
         #print(listaCat)    #El True creo que no va
         #obtenCat.renameTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", "nuevoNomb", "gshsds")
         #obtenCat.addTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["DaniTag1","DaniTag2"], "gshsds")
-        #obtenCat.removeTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["tag4","tag6"], "aut")
+        obtenCat.removeTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["tag4","tag6"], "aut")
 
     ############ Comprobacion de errores:
         #obtenCat.getTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f")

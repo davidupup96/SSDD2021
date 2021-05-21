@@ -13,9 +13,10 @@ import hashlib
 
 
 class Authenticator(IceFlix.Authenticator):
-    def __init__ (self, diccionario):
+    def __init__ (self, diccionario, diccionarioAvailability):
        
         self.dic = diccionario
+        self.dicAvai = diccionarioAvailability
         
 
 
@@ -113,6 +114,42 @@ class Token(IceFlix.TokenRevocation):
         
         print (self.dic)
         
+class ServiceAvailability (IceFlix.ServiceAvailability ):
+    def __init__ (self, dic):
+            self.dic = dic
+
+    def catalogService(self, message, id,current=None):
+        print("Catalogo recibido {0}".format(message))
+        print("Estoy en autenticator y es diccionario de catalogo")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Catalogo"].append(nuevoProxy)
+        print(self.dic)
+
+    def authenticationService(self, message,id, current=None):
+
+        print("autenticador recibido {0}".format(message))
+        print("Estoy en autenticator y es diccionario de authenticator")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Authenticator"].append(nuevoProxy)
+        print(self.dic)
+
+
+    def mediaService(self, message, id,current=None):
+        
+        print("Media Stream recibido: {0}".format(message))
+        print("Estoy en autenticator y es diccionario de media")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["MediaStream"].append(nuevoProxy)
+        print(self.dic)
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):
@@ -132,14 +169,17 @@ class Autenticador(Ice.Application):
             return 2
 
 
-        diccionario= {"Tokens": []} 
-
+        diccionario = {"Tokens": []} 
+        diccionarioAvailability = {"Service_availability": [],"Authenticator":[],
+        "MediaStream":[],"Catalogo":[],"StreamerSync":[]}
         broker = self.communicator()
-        servant = Authenticator(diccionario)
+        servant = Authenticator(diccionario,diccionarioAvailability)
         servantTokenRev = Token(diccionario)
+        servantAvailability = ServiceAvailability(diccionarioAvailability)
         adapter = broker.createObjectAdapter("AuthenticatorAdapter")
         autServer = adapter.addWithUUID(servant)
         tokenRevServer = adapter.addWithUUID(servantTokenRev)
+        serviceAvailability = adapter.addWithUUID(servantAvailability)
 
         topic_name = "ServiceAvailability" 
         topic_tokens = "AuthenticationStatus"
@@ -155,6 +195,7 @@ class Autenticador(Ice.Application):
             
 
         topic.subscribeAndGetPublisher(qos, autServer)
+        topic.subscribeAndGetPublisher(qos, serviceAvailability)
         topic2.subscribeAndGetPublisher(qos, tokenRevServer)
         print("Autenticando credenciales...'{}'".format(autServer))
         print("Revocando tokens...'{}'".format(tokenRevServer))

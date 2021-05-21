@@ -13,8 +13,9 @@ import uuid
 
 
 class StreamProvider(IceFlix.StreamProvider):
-    def __init__ (self, comunicador):
+    def __init__ (self, comunicador, diccionarioAvailability):
         self.com = comunicador
+        self.dic = diccionarioAvailability
 
     def getStream(self, id, authentication, current):
         servant = StreamController()
@@ -79,7 +80,42 @@ class StreamController(IceFlix.StreamController):
 
 
 
+class ServiceAvailability (IceFlix.ServiceAvailability ):
+    def __init__ (self, dic):
+            self.dic = dic
 
+    def catalogService(self, message, id,current=None):
+        print("Catalogo recibido {0}".format(message))
+        print("Estoy en media y es diccionario de catalogo")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Catalogo"].append(nuevoProxy)
+        print(self.dic)
+
+    def authenticationService(self, message,id, current=None):
+
+        print("autenticador recibido {0}".format(message))
+        print("Estoy en media y es diccionario de autenticator")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Authenticator"].append(nuevoProxy)
+        print(self.dic)
+
+
+    def mediaService(self, message, id,current=None):
+        
+        print("Media Stream recibido: {0}".format(message))
+        print("Estoy en media y es diccionario de media")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["MediaStream"].append(nuevoProxy)
+        print(self.dic)
 class MediaStream(Ice.Application):
     def get_topic_manager(self):
         key = 'IceStorm.TopicManager.Proxy'
@@ -96,11 +132,14 @@ class MediaStream(Ice.Application):
         if not topic_mgr:
             print("Invalid proxy")
             return 2
-
+        diccionarioAvailability = {"Service_availability": [],"Authenticator":[],
+        "MediaStream":[],"Catalogo":[],"StreamerSync":[]}
         broker = self.communicator()
-        servant = StreamProvider(broker)
+        servant = StreamProvider(broker, diccionarioAvailability)
+        servantAvailability = ServiceAvailability(diccionarioAvailability)
         adapter = broker.createObjectAdapter("StreamProviderAdapter")
         mediaServer = adapter.addWithUUID(servant)
+        serviceAvailability = adapter.addWithUUID(servantAvailability)
 
         topic_name = "ServiceAvailability" 
         qos = {}
@@ -109,6 +148,7 @@ class MediaStream(Ice.Application):
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
+        topic.subscribeAndGetPublisher(qos, serviceAvailability)
         topic.subscribeAndGetPublisher(qos, mediaServer)
         print("Creando Media Stream...'{}'".format(mediaServer))
 
