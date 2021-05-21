@@ -42,11 +42,15 @@ class MediaCatalog (IceFlix.MediaCatalog):
             for media in data["peliculas"]:
                 if(media["id"] == id):
                     listaTags = list(media["info"]["tags"])
-                    provider = IceFlix.StreamProviderPrx.checkedCast(
-                        self.com.stringToProxy(media["provider"]))
-                    print("VEMOS media[provider]")
                     print(media["provider"])
-                    print("VEMOS TYPE")
+                    providerprx = self.com.stringToProxy(media["provider"])
+                    print("GETTILE PROXY\n")
+                    print(providerprx)
+                    print(type(providerprx))
+                    provider = IceFlix.StreamProviderPrx.checkedCast(providerprx)
+                    print("VEMOS media[provider]\n")
+                    print(media["provider"])
+                    print("VEMOS TYPE\n")
                     print(type(provider))
                     print("VEMOS provider")
                     print(provider)

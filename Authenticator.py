@@ -63,8 +63,8 @@ class Authenticator(IceFlix.Authenticator):
                     self.dic["Tokens"].append(nuevoToken)   
 
                     #hacer el timer
-                    t = threading.Timer(5.0, Token.revoke,(self,nuevoToken['valor'],))
-                    t.start()  
+                    #t = threading.Timer(5.0, Token.revoke,(self,nuevoToken['valor'],))
+                    #t.start()  
                     #t.cancel para parar cuando el stream
             if not found:
                 raise IceFlix.Unauthorized

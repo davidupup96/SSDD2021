@@ -161,8 +161,8 @@ class MediaStream(Ice.Application):
         print("Soy STREAM PROVIDER :  \n")
         print(streamprx)
         media = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
-
-        media.mediaService(streamprx,str(uuid.uuid4()))
+        streamid = str(uuid.uuid4())
+        media.mediaService(streamprx,streamid)
 
 
         ############################################################

@@ -65,11 +65,14 @@ class Publisher(Ice.Application):
         if obtenAut is not None:
             #obtenAut.refreshAuthorization("Cristian","p1") 
             print("He leido un PROXY AUTHENTICATOR: \n")
+            print( type(obtenAut))
+            
             print(obtenAut)
         
         obtenCat = mai.getCatalogService()
         if obtenCat is not None:
             print("He leido un PROXY CATALOGO: \n")
+            print( type(obtenCat))
             print(obtenCat)
 
 
@@ -106,15 +109,15 @@ class Publisher(Ice.Application):
         #print(obtenCat.getTilesByName("NombreEjemplo", True))        #Probar el True
         #listaCat = obtenCat.getTilesByTags(["tag50","tag60"], False)
         #print(listaCat)    #El True creo que no va
-        #obtenCat.renameTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", "nuevoNomb", "gshsds")
-        #obtenCat.addTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["DaniTag1","DaniTag2"], "gshsds")
-        obtenCat.removeTags("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f", ["tag4","tag6"], "aut")
+        #obtenCat.renameTile("6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d", "nuevoNomb", "ab338156-c3aa-4ec2-96ca-92154559eccc")
+        #obtenCat.addTags("6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d", ["DaniTag1","DaniTag2"], "ab338156-c3aa-4ec2-96ca-92154559eccc")
+        #obtenCat.removeTags("6c83367e60c00168367a874238dfe1e1d75bb1848088b8fbfb14fa3d", ["DaniTag1","DaniTag2"], "ab338156-c3aa-4ec2-96ca-92154559eccc")
 
     ############ Comprobacion de errores:
         #obtenCat.getTile("2d81d2227a3141191569993563a6c6e1e524f0800fefbe62227bf25f")
         #obtenCat.getTilesByName("name2dd", False)          
-        aux = obtenCat.getTilesByTags(["tag4"], False)    
-        obtenCat.getTile(aux[0])
+        #aux = obtenCat.getTilesByTags(["tag1"], False)    
+        #obtenCat.getTile(aux[0])
         #obtenCat.renameTile("Id2022", "nuevoNombre100", "aut")
         #obtenCat.addTags("Id22220", ["nuevaTag1","nuevaTag2"], "aut")
         #obtenCat.removeTags("Idfff20", ["nuevaTag1","nuevaTag2"], "aut")
