@@ -49,9 +49,8 @@ class Authenticator(IceFlix.Authenticator):
         
         try:
             for persona in data["usuarios"]:
-                print("NUESTRO HASHLIB:")
-                print(hashlib.sha256(persona["pass"].encode()).hexdigest())
-                if(persona["nombre"] == user and hashlib.sha256(persona["pass"].encode()).hexdigest() == passwordHash ):
+                
+                if(persona["nombre"] == user and persona["pass"] == passwordHash ):
                     encontrado = persona
                     print("Lo encontre! ")
                     print(encontrado)
