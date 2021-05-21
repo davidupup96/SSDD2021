@@ -13,9 +13,10 @@ import hashlib
 
 
 class Authenticator(IceFlix.Authenticator):
-    def __init__ (self, diccionario):
+    def __init__ (self, diccionario, diccionarioAvailability):
        
         self.dic = diccionario
+        self.dicAvai = diccionarioAvailability
         
 
 
@@ -48,9 +49,8 @@ class Authenticator(IceFlix.Authenticator):
         
         try:
             for persona in data["usuarios"]:
-                print("NUESTRO HASHLIB:")
-                print(hashlib.sha256(persona["pass"].encode()).hexdigest())
-                if(persona["nombre"] == user and hashlib.sha256(persona["pass"].encode()).hexdigest() == passwordHash ):
+                
+                if(persona["nombre"] == user and persona["pass"] == passwordHash ):
                     encontrado = persona
                     print("Lo encontre! ")
                     print(encontrado)
@@ -62,9 +62,9 @@ class Authenticator(IceFlix.Authenticator):
                     self.dic["Tokens"].append(nuevoToken)   
 
                     #hacer el timer
-                    t = threading.Timer(5.0, Token.revoke,(self,nuevoToken['valor'],))
+                    t = threading.Timer(30.0, Token.revoke,(self,nuevoToken['valor'],))
                     t.start()  
-                    #t.cancel para parar cuando el stream
+                    
             if not found:
                 raise IceFlix.Unauthorized
 
@@ -113,6 +113,42 @@ class Token(IceFlix.TokenRevocation):
         
         print (self.dic)
         
+class ServiceAvailability (IceFlix.ServiceAvailability ):
+    def __init__ (self, dic):
+            self.dic = dic
+
+    def catalogService(self, message, id,current=None):
+        print("Catalogo recibido {0}".format(message))
+        print("Estoy en autenticator y es diccionario de catalogo")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Catalogo"].append(nuevoProxy)
+        print(self.dic)
+
+    def authenticationService(self, message,id, current=None):
+
+        print("autenticador recibido {0}".format(message))
+        print("Estoy en autenticator y es diccionario de authenticator")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["Authenticator"].append(nuevoProxy)
+        print(self.dic)
+
+
+    def mediaService(self, message, id,current=None):
+        
+        print("Media Stream recibido: {0}".format(message))
+        print("Estoy en autenticator y es diccionario de media")
+        sys.stdout.flush()
+        nuevoProxy = {}
+        nuevoProxy['id'] = id
+        nuevoProxy['valor'] = message
+        self.dic["MediaStream"].append(nuevoProxy)
+        print(self.dic)
 
 class Autenticador(Ice.Application):
     def get_topic_manager(self):
@@ -132,14 +168,17 @@ class Autenticador(Ice.Application):
             return 2
 
 
-        diccionario= {"Tokens": []} 
-
+        diccionario = {"Tokens": []} 
+        diccionarioAvailability = {"Service_availability": [],"Authenticator":[],
+        "MediaStream":[],"Catalogo":[],"StreamerSync":[]}
         broker = self.communicator()
-        servant = Authenticator(diccionario)
+        servant = Authenticator(diccionario,diccionarioAvailability)
         servantTokenRev = Token(diccionario)
+        servantAvailability = ServiceAvailability(diccionarioAvailability)
         adapter = broker.createObjectAdapter("AuthenticatorAdapter")
         autServer = adapter.addWithUUID(servant)
         tokenRevServer = adapter.addWithUUID(servantTokenRev)
+        serviceAvailability = adapter.addWithUUID(servantAvailability)
 
         topic_name = "ServiceAvailability" 
         topic_tokens = "AuthenticationStatus"
@@ -155,40 +194,23 @@ class Autenticador(Ice.Application):
             
 
         topic.subscribeAndGetPublisher(qos, autServer)
+        topic.subscribeAndGetPublisher(qos, serviceAvailability)
         topic2.subscribeAndGetPublisher(qos, tokenRevServer)
         print("Autenticando credenciales...'{}'".format(autServer))
         print("Revocando tokens...'{}'".format(tokenRevServer))
 
         adapter.activate()
-        #me he llevado 2 lineas de cerrar servicio
-       
 
-        #parte publicadora
-        #topic_mgr = self.get_topic_manager()
-
-        #topic_name2 = "ServiceAvariability2"
-        #try:
-            #topic = topic_mgr.retrieve(topic_name)
-            #topic2 = topic_mgr.retrieve(topic_name2)
-        #except IceStorm.NoSuchTopic:
-            #print("no such topic found, creating")
-            #topic = topic_mgr.create(topic_name)
-            #topic2 = topic_mgr.create(topic_name2)
-
-
-        #nuevo checkedCast
 
         autprx = IceFlix.AuthenticatorPrx.checkedCast(autServer)
         publisher = topic.getPublisher()
         aut = IceFlix.ServiceAvailabilityPrx.uncheckedCast(publisher)
         aut.authenticationService(autprx, str(uuid.uuid4()))
 
-        topic.unsubscribe(autServer)
-
-        #las 2 lineas de cerrar servicio
+        
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
-
+        topic.unsubscribe(autServer)
         return 0
 
 

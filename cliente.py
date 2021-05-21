@@ -7,6 +7,7 @@ import IceStorm
 Ice.loadSlice('EsiFlix.ice')
 import IceFlix
 import hashlib
+import threading
 
 from getpass import getpass
 
@@ -174,6 +175,12 @@ class Subscriber(Ice.Application):
 
                         token=autenticator.refreshAuthorization(user,password)
 
+                        #hacer el timer
+                        t = threading.Timer(5.0, autenticator.refreshAuthorization,(self,user,password,))
+                        t.start() 
+                        token = t.join()
+                        print(token)
+
                         print("¡Log in realizado correctamente!")
                     except IceFlix.TemporaryUnavailable:
                         print("No hay ningun autenticator disponible.")
@@ -187,17 +194,15 @@ class Subscriber(Ice.Application):
                 if user!=None and password!=None:
                     try:
                         autenticator=main.getAuthenticator()
-                        user= input("Introduzca el usuario:\n")
-                        print("Introduzca la contraseña\n")
-                        password=hashlib.sha256(getpass().encode()).hexdigest()
+
 
                         token=autenticator.refreshAuthorization(user,password)
 
-                        print("¡Se ha actualizado el token!")
+                        print("¡Se ha actualizado el token!\n")
                     except IceFlix.TemporaryUnavailable:
-                        print("No hay ningun autenticator disponible.")
+                        print("No hay ningun autenticator disponible.\n")
                     except IceFlix.Unauthorized:
-                        print("Credenciales incorrectas")
+                        print("Credenciales incorrectas\n")
 
                 else:
                     print("Primero debe iniciar sesion con \"login\"")
@@ -217,9 +222,9 @@ class Subscriber(Ice.Application):
                             print("Seleccionado el siguiente media: ", end=' ')
                             print(seleccionado.info.name)
                         except IndexError:
-                            print("El valor indicado no pertenece a la lista anterior")
+                            print("El valor indicado no pertenece a la lista anterior\n")
                     else:
-                        print("Antes de seleccionar debe realizar una busqueda con \"buscar\" o \"buscar_tag\".")
+                        print("Antes de seleccionar debe realizar una busqueda con \"buscar\" o \"buscar_tag\".\n")
                 else:
                     print("Primero debe conectarse a MainServer usando la opcion \"conectar\"\n")
 
@@ -227,17 +232,21 @@ class Subscriber(Ice.Application):
             elif choice == "nuevo_tag":
                 if main !=None:
                     if seleccionado !=None:
-                        try:
+                        if user != None:
+                            try:
 
-                            tags = [item for item in input("Introduzca los tags que desea añadir dejando un espacio entre ellos : ").split()]
+                                tags = [item for item in input("Introduzca los tags que desea añadir dejando un espacio entre ellos : ").split()]
+                                
+                                catalog.addTags(seleccionado.id,tags,token)
 
-                            catalog.removeTags(seleccionado.id,tags,token)
-                            
-                        except IceFlix.WrongMediaId:
-                            print("El identificador de media no es correcto")
-                        except IceFlix.Unauthorized:
-                            print("No tiene permiso para esta operacion.Pruebe a usar \"refresh\" y renovar el token")
-
+                                print("Tags añadidos con éxito.\n")
+                                
+                            except IceFlix.WrongMediaId:
+                                print("El identificador de media no es correcto\n")
+                            except IceFlix.Unauthorized:
+                                print("No tiene permiso para esta operacion.Pruebe a usar \"refresh\" y renovar el token\n")
+                        else:
+                            print("Antes debe loguearse. Utilice el comando \"login\"\n")
 
                     else:
                         print("Antes debe elegir un medio haciendo una busqueda y usando \"seleccionar\".\n")
@@ -248,18 +257,20 @@ class Subscriber(Ice.Application):
             elif choice == "borrar_tag":
                 if main !=None:
                     if seleccionado !=None:
-                        try:
+                        if user != None:
+                            try:
 
-                            tags = [item for item in input("Introduzca los tags que desea borrar dejando un espacio entre ellos : ").split()]
+                                tags = [item for item in input("Introduzca los tags que desea borrar dejando un espacio entre ellos : ").split()]
+                                
+                                catalog.removeTags(seleccionado.id,tags,token)
+                                print("Tags borrados con exito.\n")
 
-                            catalog.removeTags(seleccionado.id,tags,token)
-                            
-
-                        except IceFlix.WrongMediaId:
-                            print("El identificador de media no es correcto")
-                        except IceFlix.Unauthorized:
-                            print("No tiene permiso para esta operacion.Pruebe a usar \"refresh\" y renovar el token")
-
+                            except IceFlix.WrongMediaId:
+                                print("El identificador de media no es correcto\n")
+                            except IceFlix.Unauthorized:
+                                print("No tiene permiso para esta operacion.Pruebe a usar \"refresh\" y renovar el token\n")
+                        else:
+                            print("Antes debe loguearse. Utilice el comando \"login\"\n")
 
                     else:
                         print("Antes debe elegir un medio haciendo una busqueda y usando \"seleccionar\"\n")
@@ -270,17 +281,19 @@ class Subscriber(Ice.Application):
             elif choice == "cambiar_nombre":
                 if main !=None:
                     if seleccionado !=None:
-                        nombre=input("Introduzca el nuevo nombre para el media seleccionado")
+                        if user != None:
+                            nombre=input("Introduzca el nuevo nombre para el media seleccionado\n")
 
-                        try:
-                            catalog.renameTile(seleccionado.id,nombre,token)
-                            
-
-                        except IceFlix.WrongMediaId:
-                            print("El identificador de media no es correcto")
-                        except IceFlix.Unauthorized:
-                            print("No tiene permiso para esta operacion.Pruebe a usar \"refresh\" y renovar el token")
-
+                            try:
+                                catalog.renameTile(seleccionado.id,nombre,token)
+                                
+                                print("Nombre cambiado con exito.\n")
+                            except IceFlix.WrongMediaId:
+                                print("El identificador de media no es correcto\n")
+                            except IceFlix.Unauthorized:
+                                print("No tiene permiso para esta operacion.Pruebe a usar \"refresh\" y renovar el token\n")
+                        else:
+                            print("Antes debe loguearse. Utilice el comando \"login\"\n")
                     else:
                         print("Antes debe elegir un medio haciendo una busqueda y usando \"seleccionar\"\n")
                 else:
@@ -288,7 +301,7 @@ class Subscriber(Ice.Application):
 
 
             elif choice == "exit":
-                print(f'Cerrando cliente')
+                print(f'Cerrando cliente\n')
                 go = False
 
             else:
